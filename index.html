@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Freerunning — Where Athletes Push Limits</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --bg: #050810;
+  --surface: #0c1120;
+  --surface2: #131a2e;
+  --border: rgba(99,179,255,0.12);
+  --accent: #00aaff;
+  --accent2: #0066ff;
+  --accent3: #00d4ff;
+  --glow: rgba(0,170,255,0.25);
+  --text: #ffffff;
+  --muted: #6b82a8;
+  --radius: 16px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; overflow-x: hidden; background-image: radial-gradient(ellipse at 20% 20%, rgba(0,100,255,0.08) 0%, transparent 50%), radial-gradient(ellipse at 80% 80%, rgba(0,200,255,0.06) 0%, transparent 50%); background-attachment: fixed; }
+
+/* ── AUTH ── */
+#auth-screen { min-height: 100vh; background: #020510; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; background-image: radial-gradient(ellipse at 50% 30%, rgba(0,100,255,0.15) 0%, transparent 60%); }
+.auth-logo { font-family: 'Bebas Neue', sans-serif; font-size: 64px; letter-spacing: 4px; color: var(--accent); text-shadow: 0 0 40px rgba(0,170,255,0.6), 0 0 80px rgba(0,170,255,0.3); margin-bottom: 6px; text-align: center; }
+.auth-tagline { font-size: 11px; color: var(--muted); letter-spacing: 6px; text-transform: uppercase; margin-bottom: 48px; text-align: center; }
+.auth-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; width: 100%; max-width: 380px; box-shadow: 0 20px 60px rgba(0,50,150,0.3); }
+.auth-card h2 { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 1px; color: var(--text); margin-bottom: 4px; }
+.auth-card p { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+.auth-err { background: rgba(255,50,50,0.1); border: 1px solid rgba(255,50,50,0.3); color: #ff6b6b; font-size: 13px; padding: 10px 14px; border-radius: 10px; margin-bottom: 12px; display: none; }
+.auth-ok { background: rgba(0,200,120,0.1); border: 1px solid rgba(0,200,120,0.3); color: #00cc88; font-size: 13px; padding: 10px 14px; border-radius: 10px; margin-bottom: 12px; display: none; }
+.auth-input { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; background: var(--surface2); color: var(--text); margin-bottom: 10px; outline: none; transition: border-color .2s; }
+.auth-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,170,255,0.1); }
+.auth-btn { width: 100%; padding: 13px; border: none; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; margin-bottom: 10px; transition: transform .15s, opacity .15s; }
+.auth-btn:active { transform: scale(0.98); }
+.auth-btn-primary { background: linear-gradient(135deg, #0055dd, #00aaff); color: #fff; box-shadow: 0 4px 20px rgba(0,170,255,0.4); }
+.auth-btn-ghost { background: rgba(255,255,255,0.05); color: var(--muted); border: 1px solid var(--border); }
+.auth-note { font-size: 11px; color: var(--muted); text-align: center; margin-top: 6px; line-height: 1.6; display: none; }
+
+/* ── SPLASH ── */
+#splash { position: fixed; inset: 0; background: var(--bg); z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; animation: splashOut 0.5s ease 2s forwards; }
+@keyframes splashOut { to { opacity: 0; pointer-events: none; } }
+.splash-logo { font-family: 'Bebas Neue', sans-serif; font-size: 72px; letter-spacing: 4px; color: var(--accent); animation: logoIn 0.8s ease 0.3s both; text-shadow: 0 0 40px rgba(0,170,255,0.6), 0 0 80px rgba(0,170,255,0.3); }
+.splash-sub { font-size: 14px; color: var(--muted); letter-spacing: 6px; text-transform: uppercase; animation: logoIn 0.8s ease 0.6s both; margin-top: 8px; }
+@keyframes logoIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── APP ── */
+.app { max-width: 430px; margin: 0 auto; padding-bottom: 80px; min-height: 100vh; display: none; }
+
+/* ── TOP BAR ── */
+.topbar { padding: 20px 20px 0; display: flex; align-items: center; justify-content: space-between; }
+.topbar-logo { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 2px; color: var(--accent); text-shadow: 0 0 20px rgba(0,170,255,0.4); }
+.topbar-right { display: flex; align-items: center; gap: 10px; }
+.streak-pill { display: flex; align-items: center; gap: 4px; background: rgba(255,100,0,0.15); border: 1px solid rgba(255,100,0,0.3); color: #ff8040; padding: 5px 10px; border-radius: 999px; font-family: 'Space Mono', monospace; font-size: 13px; font-weight: 700; }
+.avatar-sm { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #0055dd, #00aaff); color: #fff; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 13px; cursor: pointer; box-shadow: 0 0 12px rgba(0,170,255,0.3); }
+
+/* ── BOTTOM NAV ── */
+.bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 430px; background: rgba(5,8,16,0.97); backdrop-filter: blur(24px); border-top: 1px solid rgba(0,170,255,0.15); display: flex; padding: 12px 0 20px; z-index: 50; box-shadow: 0 -4px 24px rgba(0,50,150,0.2); }
+.nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; padding: 4px 0; transition: all 0.2s; }
+.nav-icon { font-size: 20px; }
+.nav-label { font-size: 10px; color: var(--muted); letter-spacing: 0.5px; transition: color 0.2s; }
+.nav-item.active .nav-label { color: var(--accent); font-weight: 600; }
+.nav-item.active .nav-icon { transform: scale(1.15); }
+
+/* ── SCREENS ── */
+.screen { display: none; padding: 0 20px; animation: fadeIn 0.3s ease; }
+.screen.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── HOME ── */
+.greeting { margin: 24px 0 20px; }
+.greeting-hey { font-size: 14px; color: var(--muted); }
+.greeting-name { font-family: 'Bebas Neue', sans-serif; font-size: 42px; letter-spacing: 2px; line-height: 1; color: var(--text); }
+.greeting-name span { color: var(--accent3); text-shadow: 0 0 20px rgba(0,200,255,0.35); }
+
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 20px; }
+.stat-box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px 8px; text-align: center; }
+.stat-box.highlight { background: linear-gradient(135deg, var(--accent2), var(--accent)); box-shadow: 0 4px 20px rgba(0,170,255,0.35); border-color: transparent; }
+.stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--text); line-height: 1; }
+.stat-box.highlight .stat-num { color: #fff; }
+.stat-box.highlight .stat-lbl { color: rgba(255,255,255,0.75); }
+.stat-lbl { font-size: 10px; color: var(--muted); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; margin-top: 24px; }
+.section-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 1px; color: var(--text); }
+.see-all { font-size: 12px; color: var(--accent); cursor: pointer; }
+
+.level-card { background: linear-gradient(135deg, #001230, #001f50); border: 1px solid rgba(0,170,255,0.2); border-radius: var(--radius); padding: 16px; margin-bottom: 20px; box-shadow: 0 4px 24px rgba(0,100,255,0.15); }
+.level-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.level-name-txt { font-size: 13px; font-weight: 600; color: #fff; }
+.level-pts-txt { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--accent3); }
+.prog-bar { height: 8px; background: rgba(255,255,255,0.08); border-radius: 999px; overflow: hidden; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--accent2), var(--accent3)); border-radius: 999px; transition: width 1.2s cubic-bezier(0.4,0,0.2,1); box-shadow: 0 0 10px rgba(0,170,255,0.5); }
+.level-sub-txt { font-size: 11px; color: var(--muted); margin-top: 6px; }
+
+.challenge-card { background: linear-gradient(135deg, #001230 0%, #002050 100%); border: 1px solid rgba(0,170,255,0.3); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; position: relative; overflow: hidden; cursor: pointer; }
+.challenge-card::before { content: ''; position: absolute; right: -30px; top: -30px; width: 150px; height: 150px; border-radius: 50%; background: rgba(0,170,255,0.06); pointer-events: none; }
+.challenge-tag { font-size: 10px; background: rgba(0,170,255,0.2); color: var(--accent3); padding: 3px 10px; border-radius: 999px; font-weight: 600; letter-spacing: 1px; display: inline-block; margin-bottom: 10px; border: 1px solid rgba(0,200,255,0.3); }
+.challenge-title { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 1px; color: #fff; margin-bottom: 4px; text-shadow: 0 0 20px rgba(0,170,255,0.5); }
+.challenge-desc { font-size: 13px; color: rgba(255,255,255,0.75); margin-bottom: 16px; }
+.challenge-meta { display: flex; gap: 16px; }
+.challenge-meta-item { font-size: 12px; color: var(--muted); }
+.challenge-meta-item span { color: var(--accent3); font-weight: 600; }
+.challenge-btn { margin-top: 16px; background: linear-gradient(135deg, #0055dd, #00aaff); color: #fff; border: none; border-radius: 8px; padding: 10px 20px; font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 13px; cursor: pointer; transition: transform 0.15s; box-shadow: 0 4px 20px rgba(0,170,255,0.4); }
+.challenge-btn:active { transform: scale(0.97); }
+
+.activity-item { display: flex; align-items: center; gap: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 8px; }
+.activity-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.activity-icon.parkour { background: rgba(0,150,255,0.1); }
+.activity-icon.cali { background: rgba(0,200,255,0.08); }
+.activity-info { flex: 1; }
+.activity-name { font-size: 14px; font-weight: 500; color: var(--text); }
+.activity-date { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.activity-score { font-family: 'Space Mono', monospace; font-size: 14px; color: var(--accent3); font-weight: 700; }
+.pr-badge { font-size: 9px; background: rgba(0,170,255,0.15); color: var(--accent3); padding: 2px 6px; border-radius: 4px; display: block; text-align: right; margin-top: 2px; }
+
+/* ── LEADERBOARD ── */
+.lb-scope-tabs { display: flex; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 4px; margin-bottom: 12px; gap: 4px; }
+.lb-scope-tab { flex: 1; padding: 8px; text-align: center; font-size: 12px; font-weight: 600; border-radius: 9px; cursor: pointer; color: var(--muted); transition: all 0.2s; border: none; background: none; }
+.lb-scope-tab.active { background: linear-gradient(135deg, var(--accent2), var(--accent)); color: #fff; box-shadow: 0 2px 10px rgba(0,170,255,0.3); }
+.lb-title { font-family: 'Bebas Neue', sans-serif; font-size: 42px; letter-spacing: 2px; }
+.lb-title span { color: var(--accent3); }
+.lb-scope-label { font-size: 12px; color: var(--muted); font-weight: 600; margin-bottom: 12px; }
+
+.filter-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 16px; scrollbar-width: none; }
+.filter-scroll::-webkit-scrollbar { display: none; }
+.filter-pill { padding: 7px 16px; border-radius: 999px; font-size: 13px; cursor: pointer; border: 1px solid var(--border); background: var(--surface); color: var(--muted); white-space: nowrap; transition: all 0.2s; }
+.filter-pill.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 700; box-shadow: 0 0 16px rgba(0,170,255,0.4); }
+
+.podium { display: flex; align-items: flex-end; justify-content: center; gap: 12px; margin-bottom: 24px; padding: 20px 0; }
+.podium-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.podium-avatar { border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-weight: 400; }
+.podium-item.first .podium-avatar { width: 64px; height: 64px; font-size: 22px; background: linear-gradient(135deg, #0066ff, #00aaff); color: #fff; border: 3px solid #00aaff; box-shadow: 0 4px 20px rgba(0,170,255,0.45); }
+.podium-item.second .podium-avatar, .podium-item.third .podium-avatar { width: 52px; height: 52px; font-size: 18px; background: var(--surface2); color: var(--text); border: 2px solid var(--border); }
+.podium-rank { font-family: 'Bebas Neue', sans-serif; font-size: 28px; }
+.podium-item.first .podium-rank { color: var(--accent); }
+.podium-item.second .podium-rank, .podium-item.third .podium-rank { color: var(--muted); font-size: 22px; }
+.podium-name { font-size: 11px; color: var(--muted); text-align: center; max-width: 70px; }
+.podium-pts { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--text); }
+.podium-base { border-radius: 8px 8px 0 0; width: 80px; display: flex; align-items: center; justify-content: center; }
+.podium-item.first .podium-base { height: 60px; background: rgba(0,170,255,0.1); border: 1px solid rgba(0,170,255,0.3); }
+.podium-item.second .podium-base { height: 44px; background: var(--surface); border: 1px solid var(--border); }
+.podium-item.third .podium-base { height: 32px; background: var(--surface); border: 1px solid var(--border); }
+.lb-row { display: flex; align-items: center; gap: 12px; background: var(--surface); border: 1px solid rgba(0,170,255,0.1); border-radius: 12px; padding: 14px; margin-bottom: 8px; }
+.lb-row.you { border-color: rgba(0,170,255,0.5); background: rgba(0,170,255,0.07); box-shadow: 0 0 16px rgba(0,170,255,0.1); }
+.lb-pos { font-family: 'Space Mono', monospace; font-size: 13px; color: var(--muted); width: 20px; }
+.lb-av { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 14px; flex-shrink: 0; }
+.lb-nm { font-size: 14px; font-weight: 500; color: var(--text); }
+.lb-city { font-size: 12px; color: var(--muted); }
+.lb-pts-val { font-family: 'Space Mono', monospace; font-size: 14px; color: var(--accent3); font-weight: 700; }
+.lb-pts-lbl { font-size: 10px; color: var(--muted); }
+
+/* ── SKILLS ── */
+.skills-progress-card { background: linear-gradient(135deg, #001230, #001f50); border: 1px solid rgba(0,170,255,0.2); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; box-shadow: 0 4px 24px rgba(0,100,255,0.15); }
+.sp-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.sp-title { font-size: 13px; color: rgba(255,255,255,0.6); font-weight: 500; }
+.sp-val { font-family: 'Space Mono', monospace; font-size: 18px; color: var(--accent3); font-weight: 700; }
+
+.cat-tabs { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 16px; scrollbar-width: none; }
+.cat-tabs::-webkit-scrollbar { display: none; }
+.cat-tab { padding: 6px 14px; border-radius: 8px; font-size: 13px; cursor: pointer; border: 1px solid var(--border); background: var(--surface); color: var(--muted); white-space: nowrap; transition: all 0.2s; }
+.cat-tab.active { background: var(--surface2); color: var(--text); border-color: rgba(0,170,255,0.3); }
+
+.skill-card { display: flex; align-items: center; gap: 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 8px; cursor: pointer; transition: border-color 0.2s; }
+.skill-card.unlocked { border-left: 3px solid var(--accent); box-shadow: inset 0 0 20px rgba(0,170,255,0.04); }
+.skill-card.locked { opacity: 0.5; cursor: default; }
+.skill-icon { font-size: 24px; width: 44px; height: 44px; background: var(--surface2); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.skill-info { flex: 1; }
+.skill-nm { font-size: 14px; font-weight: 500; color: var(--text); }
+.skill-diff { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.skill-right { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
+.skill-pts-badge { font-size: 11px; background: rgba(0,170,255,0.12); color: var(--accent3); padding: 3px 8px; border-radius: 6px; font-family: 'Space Mono', monospace; font-weight: 700; border: 1px solid rgba(0,200,255,0.2); }
+.yt-btn { font-size: 10px; background: #ff0000; color: white; padding: 3px 8px; border-radius: 6px; font-weight: 600; cursor: pointer; border: none; white-space: nowrap; }
+.log-btn-sm { font-size: 10px; background: linear-gradient(135deg, #0055dd, #00aaff); color: white; padding: 3px 8px; border-radius: 6px; font-weight: 600; cursor: pointer; border: none; }
+.best-score-txt { font-size: 11px; color: var(--muted); }
+.unlock-badge { font-size: 11px; background: linear-gradient(135deg, #0066ff, #00aaff); color: #fff; padding: 3px 8px; border-radius: 6px; font-weight: 700; box-shadow: 0 2px 8px rgba(0,170,255,0.4); }
+
+/* ── TRAINING ── */
+.training-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 16px; overflow: hidden; }
+.training-header { padding: 18px; }
+.plan-tag { font-size: 10px; padding: 3px 10px; border-radius: 999px; font-weight: 700; letter-spacing: 0.5px; display: inline-block; margin-bottom: 8px; }
+.plan-tag.free { background: rgba(0,200,120,0.12); color: #00cc88; border: 1px solid rgba(0,200,120,0.3); }
+.plan-tag.paid { background: rgba(0,170,255,0.1); color: var(--accent); border: 1px solid rgba(0,170,255,0.25); }
+.plan-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 1px; color: var(--text); margin-bottom: 4px; }
+.plan-desc { font-size: 13px; color: var(--muted); line-height: 1.5; margin-bottom: 14px; }
+.plan-meta { display: flex; gap: 16px; }
+.plan-meta-item { font-size: 11px; color: var(--muted); }
+.plan-meta-item strong { color: var(--text); display: block; font-size: 14px; font-weight: 600; }
+.plan-modules { border-top: 1px solid var(--border); }
+.plan-module { display: flex; align-items: center; gap: 12px; padding: 12px 18px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.15s; }
+.plan-module:last-child { border-bottom: none; }
+.plan-module:hover { background: var(--surface2); }
+.mod-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.mod-icon.free { background: rgba(0,200,120,0.12); }
+.mod-icon.locked { background: var(--surface2); }
+.mod-title { flex: 1; font-size: 13px; font-weight: 500; color: var(--text); }
+.mod-dur { font-size: 11px; color: var(--muted); }
+.training-footer { padding: 14px 18px; background: var(--surface2); border-top: 1px solid var(--border); }
+.plan-price { font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--text); margin-bottom: 6px; letter-spacing: 1px; }
+.plan-price span { font-size: 13px; color: var(--muted); font-family: 'DM Sans', sans-serif; font-weight: 400; }
+.unlock-btn { width: 100%; padding: 12px; background: linear-gradient(135deg, #0055dd, #00aaff); color: #fff; border: none; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 14px; cursor: pointer; box-shadow: 0 4px 16px rgba(0,170,255,0.35); transition: transform 0.15s; }
+.unlock-btn:active { transform: scale(0.98); }
+.start-btn { width: 100%; padding: 12px; background: linear-gradient(135deg, #007a3d, #00cc88); color: #fff; border: none; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 14px; cursor: pointer; box-shadow: 0 4px 16px rgba(0,200,120,0.3); }
+
+/* ── FEED ── */
+.feed-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; }
+.feed-user { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.feed-av { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 14px; flex-shrink: 0; }
+.feed-user-name { font-size: 14px; font-weight: 500; }
+.feed-user-loc { font-size: 12px; color: var(--muted); }
+.feed-time { font-size: 12px; color: var(--muted); margin-left: auto; }
+.feed-achievement { background: rgba(0,170,255,0.05); border: 1px solid rgba(0,170,255,0.1); border-radius: 12px; padding: 14px; display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.feed-ach-icon { font-size: 28px; }
+.feed-ach-title { font-size: 14px; font-weight: 500; }
+.feed-ach-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.feed-score-highlight { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--accent3); text-shadow: 0 0 20px rgba(0,200,255,0.4); margin-left: auto; }
+.feed-actions { display: flex; gap: 16px; }
+.feed-action { font-size: 13px; color: var(--muted); cursor: pointer; display: flex; align-items: center; gap: 4px; background: none; border: none; font-family: 'DM Sans', sans-serif; }
+.feed-action.liked { color: #ff4d6d; }
+
+/* ── PROFILE ── */
+.profile-hero { background: linear-gradient(160deg, #001230 0%, #002050 60%, #001a40 100%); border: 1px solid rgba(0,170,255,0.2); border-radius: var(--radius); padding: 28px; margin: 20px 0; text-align: center; box-shadow: 0 8px 32px rgba(0,100,255,0.2); }
+.profile-av-lg { width: 76px; height: 76px; border-radius: 50%; background: linear-gradient(135deg, #0055dd, #00aaff); color: #fff; font-family: 'Bebas Neue', sans-serif; font-size: 30px; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; box-shadow: 0 0 30px rgba(0,170,255,0.5); }
+.profile-nm { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 1px; color: #fff; }
+.profile-loc { font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 4px; }
+.profile-rank-badge { display: inline-block; background: rgba(0,170,255,0.12); border: 1px solid rgba(0,170,255,0.4); color: var(--accent); font-size: 12px; padding: 5px 16px; border-radius: 999px; margin-top: 12px; font-weight: 600; box-shadow: 0 0 12px rgba(0,170,255,0.2); }
+.profile-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; }
+.profile-stat { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 8px; text-align: center; }
+.profile-stat-val { font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--accent3); }
+.profile-stat-lbl { font-size: 11px; color: var(--muted); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+.skill-rank-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.skill-rank-row:last-child { border-bottom: none; }
+.skill-rank-icon { font-size: 20px; width: 36px; text-align: center; }
+.skill-rank-name { font-size: 14px; font-weight: 500; color: var(--text); }
+.skill-rank-nat { font-size: 12px; color: var(--muted); }
+.skill-rank-score { font-family: 'Space Mono', monospace; font-size: 14px; color: var(--accent3); font-weight: 700; }
+
+/* ── MODAL ── */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); z-index: 200; display: flex; align-items: flex-end; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal { background: var(--surface); border: 1px solid rgba(0,170,255,0.15); border-radius: 24px 24px 0 0; padding: 24px 20px 40px; width: 100%; max-width: 430px; transform: translateY(100%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); }
+.modal-overlay.open .modal { transform: translateY(0); }
+.modal-title { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 1px; margin-bottom: 20px; color: var(--text); }
+.modal-close { float: right; font-size: 22px; cursor: pointer; color: var(--muted); background: none; border: none; }
+.modal-input { width: 100%; background: rgba(0,100,255,0.05); border: 1px solid rgba(0,170,255,0.15); border-radius: 10px; padding: 12px 16px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; margin-bottom: 12px; outline: none; transition: border-color 0.2s; }
+.modal-input:focus { border-color: var(--accent); }
+.modal-input option, .modal-input optgroup { background: #0c1120; color: #ffffff; }
+.modal-btn { width: 100%; background: linear-gradient(135deg, #0055dd, #00aaff); color: #fff; border: none; border-radius: 12px; padding: 14px; font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1px; cursor: pointer; transition: transform 0.15s; box-shadow: 0 4px 20px rgba(0,170,255,0.4); }
+.modal-btn:active { transform: scale(0.98); }
+
+/* ── PAYMENT MODAL ── */
+.payment-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(6px); z-index: 300; display: flex; align-items: center; justify-content: center; padding: 24px; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+.payment-overlay.open { opacity: 1; pointer-events: all; }
+.payment-modal { background: var(--surface); border: 1px solid rgba(0,170,255,0.2); border-radius: var(--radius); padding: 28px; width: 100%; max-width: 380px; transform: scale(0.95); transition: transform 0.3s; box-shadow: 0 20px 60px rgba(0,50,150,0.4); }
+.payment-overlay.open .payment-modal { transform: scale(1); }
+.pay-title { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 1px; color: var(--text); margin-bottom: 4px; }
+.pay-sub { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
+.pay-amount { font-family: 'Bebas Neue', sans-serif; font-size: 38px; color: var(--accent3); margin-bottom: 20px; letter-spacing: 1px; text-shadow: 0 0 20px rgba(0,200,255,0.3); }
+.pay-methods { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.pay-method { padding: 14px; border: 1px solid var(--border); border-radius: 12px; text-align: center; cursor: pointer; transition: all 0.2s; }
+.pay-method.selected { border-color: var(--accent); background: rgba(0,170,255,0.08); }
+.pay-method-icon { font-size: 24px; margin-bottom: 4px; }
+.pay-method-name { font-size: 12px; font-weight: 600; color: var(--text); }
+.pay-method-sub { font-size: 10px; color: var(--muted); margin-top: 2px; }
+.pay-type-tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+.pay-type-tab { flex: 1; padding: 8px; border: 1px solid var(--border); border-radius: 8px; text-align: center; font-size: 12px; font-weight: 600; cursor: pointer; color: var(--muted); background: none; transition: all 0.2s; }
+.pay-type-tab.selected { border-color: var(--accent); color: var(--accent); background: rgba(0,170,255,0.08); }
+.pay-note { font-size: 11px; color: var(--muted); text-align: center; margin-bottom: 16px; }
+.pay-now-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, #0055dd, #00aaff); color: #fff; border: none; border-radius: 12px; font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1px; cursor: pointer; margin-bottom: 10px; box-shadow: 0 4px 20px rgba(0,170,255,0.4); }
+.pay-cancel { width: 100%; padding: 10px; background: none; border: none; font-size: 14px; color: var(--muted); cursor: pointer; }
+.secure-note { text-align: center; font-size: 11px; color: var(--muted); margin-top: 8px; }
+
+/* ── FAB ── */
+.fab { position: fixed; bottom: 90px; right: calc(50% - 200px); width: 52px; height: 52px; background: linear-gradient(135deg, #0055dd, #00aaff); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; border: none; box-shadow: 0 4px 24px rgba(0,170,255,0.5); transition: transform 0.2s; z-index: 40; color: white; font-weight: 300; line-height: 1; }
+.fab:active { transform: scale(0.92); }
+
+/* ── TOAST ── */
+.toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-80px); background: var(--surface2); color: var(--text); border: 1px solid var(--border); padding: 12px 24px; border-radius: 999px; font-size: 13px; font-weight: 600; z-index: 999; transition: transform 0.3s ease; white-space: nowrap; max-width: 90%; box-shadow: 0 4px 20px rgba(0,50,150,0.3); }
+.toast.show { transform: translateX(-50%) translateY(0); }
+.loading { text-align: center; padding: 40px; color: var(--muted); font-size: 14px; }
+.empty { text-align: center; padding: 32px; color: var(--muted); font-size: 14px; }
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<!-- AUTH -->
+<div id="auth-screen">
+  <div class="auth-logo">FREERUNNING</div>
+  <div class="auth-tagline">Where Athletes Push Limits</div>
+  <div class="auth-card">
+    <h2 id="auth-title">Welcome Back</h2>
+    <p id="auth-sub">Sign in to your account</p>
+    <div class="auth-err" id="auth-err"></div>
+    <div class="auth-ok" id="auth-ok"></div>
+    <input class="auth-input" id="auth-name" placeholder="Full name" style="display:none">
+    <input class="auth-input" id="auth-city" placeholder="Your city (e.g. Mumbai)" style="display:none"><input class="auth-input" id="auth-country" placeholder="Your country (e.g. India, UK, USA)" style="display:none">
+    <input class="auth-input" id="auth-email" type="email" placeholder="Email address">
+    <input class="auth-input" id="auth-pass" type="password" placeholder="Password">
+    <button class="auth-btn auth-btn-primary" id="auth-submit" onclick="doAuth()">Sign In</button>
+    <button class="auth-btn auth-btn-ghost" id="auth-toggle" onclick="toggleAuthMode()">✨ New here? Create Account</button>
+    <button class="auth-btn auth-btn-ghost" onclick="guestMode()">👀 Browse as Guest</button>
+    <div class="auth-note" id="auth-note">We'll send a verification email after signup.</div>
+  </div>
+</div>
+
+<!-- SPLASH (shown only after login) -->
+<div id="splash" style="display:none">
+  <div class="splash-logo">FREERUNNING</div>
+  <div class="splash-sub">Where Athletes Push Limits</div>
+</div>
+
+<!-- APP -->
+<div class="app" id="app">
+  <div class="topbar">
+    <div class="topbar-logo">FREERUN</div>
+    <div class="topbar-right">
+      <div class="streak-pill">🔥 <span id="streak-count">0</span></div>
+      <div class="avatar-sm" id="user-avatar" onclick="switchScreen('profile')">?</div>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div id="screen-home" class="screen active">
+    <div class="greeting">
+      <div class="greeting-hey" id="greeting-time">Good morning,</div>
+      <div class="greeting-name"><span id="user-first-name">Athlete</span> 👋</div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-box highlight"><div class="stat-num" id="stat-streak">0</div><div class="stat-lbl">Streak</div></div>
+      <div class="stat-box"><div class="stat-num" id="stat-pts">0</div><div class="stat-lbl">Points</div></div>
+      <div class="stat-box"><div class="stat-num" id="stat-moves">0</div><div class="stat-lbl">Moves</div></div>
+      <div class="stat-box"><div class="stat-num" id="stat-skills">0</div><div class="stat-lbl">Skills</div></div>
+    </div>
+    <div class="level-card">
+      <div class="level-row">
+        <span class="level-name-txt" id="level-name">Level 1 — Beginner</span>
+        <span class="level-pts-txt" id="level-pts">0/100 pts</span>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" id="level-bar" style="width:0%"></div></div>
+      <div class="level-sub-txt" id="level-sub">Keep going!</div>
+    </div>
+    <div class="section-header">
+      <div class="section-title">Monthly Challenge</div>
+      <div class="see-all">March 2026</div>
+    </div>
+    <div class="challenge-card" onclick="showLogModal('Pull-up Challenge','reps')">
+      <div class="challenge-tag">🏆 Monthly Challenge</div>
+      <div class="challenge-title">Max Pull-up Month</div>
+      <div class="challenge-desc">Push your limits every week. Log your max reps and climb the global leaderboard.</div>
+      <div class="challenge-meta">
+        <div class="challenge-meta-item">Reward <span>+100 pts</span></div>
+        <div class="challenge-meta-item">Athletes <span id="challenge-count">—</span></div>
+        <div class="challenge-meta-item">Ends in <span>9 days</span></div>
+      </div>
+      <button class="challenge-btn">Log My Score →</button>
+    </div>
+    <div class="section-header">
+      <div class="section-title">Recent Activity</div>
+      <div class="see-all" onclick="switchScreen('feed')">See all</div>
+    </div>
+    <div id="recent-activity"><div class="loading">Loading…</div></div>
+  </div>
+
+  <!-- LEADERBOARD -->
+  <div id="screen-rank" class="screen">
+    <div class="greeting">
+      <div class="greeting-name">Global <span>Ranks</span></div>
+    </div>
+    <div class="lb-scope-tabs">
+      <button class="lb-scope-tab active" onclick="setLBScope(this,'world')">🌍 World</button>
+      <button class="lb-scope-tab" onclick="setLBScope(this,'national')">🏳️ National</button>
+      <button class="lb-scope-tab" onclick="setLBScope(this,'city')">📍 City</button>
+    </div>
+    <div id="city-selector" style="display:none;margin-bottom:12px;">
+      <input id="city-input" class="modal-input" style="margin-bottom:0;" placeholder="Enter city name (e.g. Mumbai, Delhi, London)..." oninput="citySearch(this.value)">
+      <div id="city-suggestions" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-top:4px;display:none;"></div>
+    </div>
+    <div class="filter-scroll">
+      <div class="filter-pill active" onclick="setLBFilter(this,'all')">All Skills</div>
+      <div class="filter-pill" onclick="setLBFilter(this,'pullups')">Pull-ups</div>
+      <div class="filter-pill" onclick="setLBFilter(this,'pushups')">Push-ups</div>
+      <div class="filter-pill" onclick="setLBFilter(this,'parkour')">Parkour</div>
+    </div>
+    <div class="lb-scope-label" id="lb-scope-label">🌍 World Rankings — All Skills</div>
+    <div id="podium-section"></div>
+    <div id="lb-list"><div class="loading">Loading…</div></div>
+  </div>
+
+  <!-- SKILLS -->
+  <div id="screen-skills" class="screen">
+    <div class="greeting">
+      <div class="greeting-name">Skill <span>Tree</span></div>
+    </div>
+    <div class="skills-progress-card">
+      <div class="sp-row">
+        <div class="sp-title">Skills Unlocked</div>
+        <div class="sp-val" id="skills-progress-val">0 / 120</div>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" id="skills-prog-bar" style="width:0%"></div></div>
+    </div>
+    <div class="cat-tabs">
+      <div class="cat-tab active" onclick="filterSkills(this,'all')">All</div>
+      <div class="cat-tab" onclick="filterSkills(this,'parkour')">Parkour</div>
+      <div class="cat-tab" onclick="filterSkills(this,'calisthenics')">Calisthenics</div>
+      <div class="cat-tab" onclick="filterSkills(this,'acrobatics')">Acrobatics</div>
+    </div>
+    <div id="skills-list"></div>
+  </div>
+
+  <!-- TRAINING -->
+  <div id="screen-training" class="screen">
+    <div class="greeting">
+      <div class="greeting-name">Training <span>Plans</span></div>
+    </div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:20px;">Start free. Unlock advanced programmes.</p>
+    <div id="training-list"></div>
+  </div>
+
+  <!-- FEED -->
+  <div id="screen-feed" class="screen">
+    <div class="greeting">
+      <div class="greeting-name">Community <span>Feed</span></div>
+    </div>
+    <div id="post-box" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:16px;">
+      <textarea id="post-text" placeholder="Share your workout, achievement or experience... 💪" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;resize:none;height:80px;outline:none;line-height:1.5;"></textarea>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;">
+        <span style="font-size:12px;color:var(--muted);" id="post-char-count">0 / 280</span>
+        <button onclick="submitPost()" style="background:linear-gradient(135deg,#0055dd,#00aaff);color:#fff;border:none;border-radius:8px;padding:8px 18px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 4px 14px rgba(0,170,255,0.35);">Post 🔥</button>
+      </div>
+    </div>
+    <div id="guest-post-prompt" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:16px;text-align:center;">
+      <div style="font-size:14px;color:var(--muted);">Sign up to share with the community 👋</div>
+    </div>
+    <div id="feed-list"><div class="loading">Loading…</div></div>
+  </div>
+
+  <!-- PROFILE -->
+  <div id="screen-profile" class="screen">
+    <div class="profile-hero">
+      <div class="profile-av-lg" id="profile-av-lg">?</div>
+      <div class="profile-nm" id="profile-nm">Athlete</div>
+      <div class="profile-loc" id="profile-loc">Earth</div>
+      <div class="profile-rank-badge" id="profile-rank">🏅 Loading rank…</div>
+    </div>
+    <div class="profile-stats">
+      <div class="profile-stat"><div class="profile-stat-val" id="p-pts">0</div><div class="profile-stat-lbl">Points</div></div>
+      <div class="profile-stat"><div class="profile-stat-val" id="p-skills">0</div><div class="profile-stat-lbl">Skills</div></div>
+      <div class="profile-stat"><div class="profile-stat-val" id="p-streak">0</div><div class="profile-stat-lbl">Streak</div></div>
+    </div>
+    <div class="section-header"><div class="section-title">Top Skills</div></div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:20px;">
+      <div id="profile-skills"><div class="loading">Loading…</div></div>
+    </div>
+    <button onclick="signOut()" style="width:100%;padding:14px;background:var(--surface);border:1px solid var(--border);border-radius:12px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;color:var(--muted);">Sign Out</button>
+    <br><br>
+  </div>
+</div>
+
+<button class="fab" id="fab-btn" onclick="showLogModal('','')">+</button>
+
+<div class="bottom-nav" id="bottom-nav" style="display:none">
+  <div class="nav-item active" onclick="switchScreen('home')"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></div>
+  <div class="nav-item" onclick="switchScreen('skills')"><div class="nav-icon">⚡</div><div class="nav-label">Skills</div></div>
+  <div class="nav-item" onclick="switchScreen('rank')"><div class="nav-icon">🏆</div><div class="nav-label">Rank</div></div>
+  <div class="nav-item" onclick="switchScreen('training')"><div class="nav-icon">🎯</div><div class="nav-label">Train</div></div>
+  <div class="nav-item" onclick="switchScreen('feed')"><div class="nav-icon">📡</div><div class="nav-label">Feed</div></div>
+</div>
+
+<!-- LOG MODAL -->
+<div class="modal-overlay" id="logModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('logModal')">✕</button>
+    <div class="modal-title">Log Skill</div>
+    <select class="modal-input" id="m-skill" onchange="updateScorePlaceholder()">
+      <option value="">Select a skill...</option>
+      <optgroup label="🤸 Calisthenics">
+        <option value="Pull-ups">Pull-ups (reps)</option>
+        <option value="Push-ups">Push-ups (reps)</option>
+        <option value="Muscle-up">Muscle-up (reps)</option>
+        <option value="Dips">Dips (reps)</option>
+        <option value="Handstand Push-up">Handstand Push-up (reps)</option>
+        <option value="L-sit Hold">L-sit Hold (seconds)</option>
+        <option value="Front Lever">Front Lever (seconds)</option>
+        <option value="Back Lever">Back Lever (seconds)</option>
+      </optgroup>
+      <optgroup label="🏃 Parkour">
+        <option value="Precision Jump">Precision Jump (metres)</option>
+        <option value="Kong Vault">Kong Vault (reps)</option>
+        <option value="Speed Vault">Speed Vault (reps)</option>
+        <option value="Dash Vault">Dash Vault (reps)</option>
+        <option value="Cat Leap">Cat Leap (metres)</option>
+        <option value="Wall Run">Wall Run (metres)</option>
+        <option value="Tic Tac">Tic Tac (reps)</option>
+        <option value="Lazy Vault">Lazy Vault (reps)</option>
+      </optgroup>
+      <optgroup label="🔄 Acrobatics">
+        <option value="Backflip">Backflip (reps)</option>
+        <option value="Front Flip">Front Flip (reps)</option>
+        <option value="Side Flip">Side Flip (reps)</option>
+        <option value="Gainer">Gainer (reps)</option>
+      </optgroup>
+    </select>
+    <input class="modal-input" id="m-score" placeholder="Score (e.g. 24 reps, 3.2m)">
+    <select class="modal-input" id="m-cat">
+      <option value="calisthenics">Calisthenics</option>
+      <option value="parkour">Parkour</option>
+      <option value="acrobatics">Acrobatics</option>
+      <option value="strength">Strength</option>
+    </select>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:14px;">📸 Photo/video proof — coming soon</div>
+    <button class="modal-btn" onclick="saveLog()">Log It 🔥</button>
+  </div>
+</div>
+
+<!-- PAYMENT MODAL -->
+<div class="payment-overlay" id="payModal">
+  <div class="payment-modal">
+    <div class="pay-title" id="pay-title">Unlock Plan</div>
+    <div class="pay-sub" id="pay-sub">Get full access</div>
+    <div class="pay-amount" id="pay-amount">₹999</div>
+    <div class="pay-methods">
+      <div class="pay-method selected" onclick="selectPayMethod(this,'razorpay')">
+        <div class="pay-method-icon">🇮🇳</div>
+        <div class="pay-method-name">Razorpay</div>
+        <div class="pay-method-sub">UPI · Cards · NetBanking</div>
+      </div>
+      <div class="pay-method" onclick="selectPayMethod(this,'stripe')">
+        <div class="pay-method-icon">💳</div>
+        <div class="pay-method-name">Stripe</div>
+        <div class="pay-method-sub">International cards</div>
+      </div>
+    </div>
+    <div class="pay-type-tabs">
+      <button class="pay-type-tab selected" id="pt-once" onclick="selectPayType(this,'once')">One-time</button>
+      <button class="pay-type-tab" id="pt-sub" onclick="selectPayType(this,'sub')">Monthly</button>
+    </div>
+    <div class="pay-note" id="pay-note">One-time payment. Lifetime access.</div>
+    <button class="pay-now-btn" onclick="processPayment()">Pay Now →</button>
+    <button class="pay-cancel" onclick="closeModal('payModal')">Cancel</button>
+    <div class="secure-note">🔒 Secure payment · SSL encrypted</div>
+  </div>
+</div>
+
+<script>
+const SB_URL='https://sgtijeghefziaknuomup.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNndGlqZWdoZWZ6aWFrbnVvbXVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxODI1OTksImV4cCI6MjA4OTc1ODU5OX0._Qd2eKT6c-bbwR9aEpFQnSJnZMgDfEmwfhGh1QULtjw';
+const sb=supabase.createClient(SB_URL,SB_KEY);
+
+const SKILLS=[
+  {id:1,n:'Pull-ups',cat:'calisthenics',d:'Intermediate',p:20,ico:'💪',u:'reps',yt:'https://www.youtube.com/results?search_query=pull+ups+tutorial+form'},
+  {id:2,n:'Push-ups',cat:'calisthenics',d:'Beginner',p:10,ico:'🤸',u:'reps',yt:'https://www.youtube.com/results?search_query=perfect+push+up+tutorial'},
+  {id:3,n:'Muscle-up',cat:'calisthenics',d:'Advanced',p:30,ico:'🔥',u:'reps',yt:'https://www.youtube.com/results?search_query=muscle+up+tutorial'},
+  {id:4,n:'Dips',cat:'calisthenics',d:'Beginner',p:10,ico:'💺',u:'reps',yt:'https://www.youtube.com/results?search_query=parallel+bar+dips+tutorial'},
+  {id:5,n:'Handstand Push-up',cat:'calisthenics',d:'Advanced',p:40,ico:'🙃',u:'reps',yt:'https://www.youtube.com/results?search_query=handstand+push+up+tutorial'},
+  {id:6,n:'L-sit Hold',cat:'calisthenics',d:'Intermediate',p:25,ico:'⚡',u:'seconds',yt:'https://www.youtube.com/results?search_query=l+sit+tutorial'},
+  {id:7,n:'Front Lever',cat:'calisthenics',d:'Elite',p:60,ico:'🌟',u:'seconds',yt:'https://www.youtube.com/results?search_query=front+lever+progression'},
+  {id:8,n:'Back Lever',cat:'calisthenics',d:'Elite',p:60,ico:'⭐',u:'seconds',yt:'https://www.youtube.com/results?search_query=back+lever+tutorial'},
+  {id:9,n:'Precision Jump',cat:'parkour',d:'Beginner',p:15,ico:'🏃',u:'metres',yt:'https://www.youtube.com/results?search_query=parkour+precision+jump+tutorial'},
+  {id:10,n:'Kong Vault',cat:'parkour',d:'Intermediate',p:25,ico:'🌀',u:'reps',yt:'https://www.youtube.com/results?search_query=kong+vault+tutorial'},
+  {id:11,n:'Speed Vault',cat:'parkour',d:'Beginner',p:15,ico:'💨',u:'reps',yt:'https://www.youtube.com/results?search_query=speed+vault+parkour+tutorial'},
+  {id:12,n:'Dash Vault',cat:'parkour',d:'Intermediate',p:20,ico:'🏄',u:'reps',yt:'https://www.youtube.com/results?search_query=dash+vault+parkour'},
+  {id:13,n:'Cat Leap',cat:'parkour',d:'Beginner',p:15,ico:'🐱',u:'metres',yt:'https://www.youtube.com/results?search_query=cat+leap+parkour+tutorial'},
+  {id:14,n:'Wall Run',cat:'parkour',d:'Intermediate',p:20,ico:'🧱',u:'metres',yt:'https://www.youtube.com/results?search_query=wall+run+parkour+tutorial'},
+  {id:15,n:'Tic Tac',cat:'parkour',d:'Intermediate',p:20,ico:'↗️',u:'reps',yt:'https://www.youtube.com/results?search_query=tic+tac+parkour+tutorial'},
+  {id:16,n:'Backflip',cat:'acrobatics',d:'Advanced',p:50,ico:'🔄',u:'reps',yt:'https://www.youtube.com/results?search_query=backflip+tutorial+step+by+step'},
+  {id:17,n:'Front Flip',cat:'acrobatics',d:'Advanced',p:45,ico:'🔃',u:'reps',yt:'https://www.youtube.com/results?search_query=front+flip+tutorial'},
+  {id:18,n:'Side Flip',cat:'acrobatics',d:'Advanced',p:45,ico:'↩️',u:'reps',yt:'https://www.youtube.com/results?search_query=side+flip+freerunning+tutorial'},
+  {id:19,n:'Gainer',cat:'acrobatics',d:'Elite',p:70,ico:'🎯',u:'reps',yt:'https://www.youtube.com/results?search_query=gainer+flip+tutorial'},
+  {id:20,n:'Lazy Vault',cat:'parkour',d:'Beginner',p:10,ico:'😎',u:'reps',yt:'https://www.youtube.com/results?search_query=lazy+vault+parkour+tutorial'},
+];
+
+const PLANS=[
+  {id:1,title:'Beginner Foundations',free:true,price:0,monthly:0,desc:'Build the strength and body control you need for everything else.',dur:'4 weeks',lvl:'Beginner',sess:16,modules:[
+    {t:'Introduction to Movement',f:true,dur:'15 min',ico:'🎯'},
+    {t:'Basic Bodyweight Strength',f:true,dur:'25 min',ico:'💪'},
+    {t:'Balance & Coordination',f:true,dur:'20 min',ico:'⚖️'},
+    {t:'First Jumps & Vaults',f:true,dur:'30 min',ico:'🏃'},
+  ]},
+  {id:2,title:'Parkour Intermediate',free:false,price:999,monthly:299,desc:'Complex vaults, wall runs and flow combinations.',dur:'8 weeks',lvl:'Intermediate',sess:32,modules:[
+    {t:'Kong Vault Mastery',f:false,dur:'35 min',ico:'🌀'},
+    {t:'Speed & Dash Vault',f:false,dur:'30 min',ico:'💨'},
+    {t:'Wall Run Technique',f:false,dur:'40 min',ico:'🧱'},
+    {t:'Flow & Combinations',f:false,dur:'45 min',ico:'🌊'},
+    {t:'Drop Landing Safety',f:false,dur:'25 min',ico:'🛡️'},
+  ]},
+  {id:3,title:'Calisthenics Strength',free:false,price:799,monthly:249,desc:'Pull-ups to front lever. Build superhuman strength.',dur:'12 weeks',lvl:'All levels',sess:48,modules:[
+    {t:'Pull-up Progressions',f:false,dur:'30 min',ico:'💪'},
+    {t:'Muscle-up Foundation',f:false,dur:'35 min',ico:'🔥'},
+    {t:'L-sit & Core Control',f:false,dur:'25 min',ico:'⚡'},
+    {t:'Front Lever Journey',f:false,dur:'35 min',ico:'🌟'},
+  ]},
+  {id:4,title:'Acrobatics Elite',free:false,price:1499,monthly:449,desc:'Master flips and aerial skills. For experienced practitioners only.',dur:'16 weeks',lvl:'Advanced',sess:64,modules:[
+    {t:'Backflip Mechanics',f:false,dur:'45 min',ico:'🔄'},
+    {t:'Front Flip Mastery',f:false,dur:'40 min',ico:'🔃'},
+    {t:'Gainer Introduction',f:false,dur:'50 min',ico:'🎯'},
+    {t:'Combo Sequences',f:false,dur:'55 min',ico:'✨'},
+  ]},
+];
+
+const LEVELS=[
+  {n:'White Belt',min:0,max:100,color:'#ffffff',emoji:'🤍'},
+  {n:'Yellow Belt',min:100,max:300,color:'#ffd700',emoji:'💛'},
+  {n:'Orange Belt',min:300,max:600,color:'#ff8c00',emoji:'🧡'},
+  {n:'Green Belt',min:600,max:1000,color:'#00cc88',emoji:'💚'},
+  {n:'Blue Belt',min:1000,max:1500,color:'#00aaff',emoji:'💙'},
+  {n:'Purple Belt',min:1500,max:2500,color:'#9b59b6',emoji:'💜'},
+  {n:'Brown Belt',min:2500,max:4000,color:'#8B4513',emoji:'🤎'},
+  {n:'Black Belt',min:4000,max:99999,color:'#1a1a1a',emoji:'🖤'},
+];
+const COLORS=['#0066ff','#0099ff','#00bbff','#0044cc','#3388ff','#55aaff','#2277dd'];
+
+let user=null,prof=null,isGuest=false,isSignUp=false,myLogs=[],lbScope='world',payMethod='razorpay',payType='once',activePlan=null,selectedCity='';
+
+// ── AUTH ──
+async function doAuth(){
+  const email=val('auth-email'),pass=val('auth-pass');
+  hideEl('auth-err');hideEl('auth-ok');
+  if(!email||!pass){showErr('Please fill in all fields');return;}
+  if(isSignUp){
+    const name=val('auth-name'),city=val('auth-city'),country=val('auth-country');
+    if(!name||!city){showErr('Please enter your name and city');return;}
+    const{data,error}=await sb.auth.signUp({email,password:pass});
+    if(error){showErr(error.message);return;}
+    if(data.user){
+      const{error:pe}=await sb.from('profiles').upsert({id:data.user.id,name,city,email,country:country||'',points:0,streak:0,skills_count:0,moves_count:0},{onConflict:'id'});
+      if(pe)console.error('Profile upsert error:',pe.message);
+      showOk('✅ Account created! Check your email to verify, then sign in.');
+      toggleAuthMode();
+    }
+  } else {
+    const{data,error}=await sb.auth.signInWithPassword({email,password:pass});
+    if(error){showErr(error.message);return;}
+    if(data.user)await bootApp(data.user);
+  }
+}
+
+function showErr(m){const e=document.getElementById('auth-err');e.textContent=m;e.style.display='block';}
+function showOk(m){const e=document.getElementById('auth-ok');e.textContent=m;e.style.display='block';}
+function hideEl(id){document.getElementById(id).style.display='none';}
+function val(id){return document.getElementById(id).value.trim();}
+
+function toggleAuthMode(){
+  isSignUp=!isSignUp;
+  hideEl('auth-err');hideEl('auth-ok');
+  setText('auth-title',isSignUp?'Create Account':'Welcome Back');
+  setText('auth-sub',isSignUp?"Join the movement":'Sign in to your account');
+  document.getElementById('auth-submit').textContent=isSignUp?'Create Account':'Sign In';
+  document.getElementById('auth-toggle').textContent=isSignUp?'← Back to Sign In':'✨ New here? Create Account';
+  document.getElementById('auth-name').style.display=isSignUp?'block':'none';
+  document.getElementById('auth-city').style.display=isSignUp?'block':'none';
+  document.getElementById('auth-country').style.display=isSignUp?'block':'none';
+  document.getElementById('auth-note').style.display=isSignUp?'block':'none';
+}
+
+function guestMode(){
+  isGuest=true;
+  document.getElementById('auth-screen').style.display='none';
+  document.getElementById('app').style.display='block';
+  document.getElementById('bottom-nav').style.display='flex';
+  document.getElementById('fab-btn').style.display='none';
+  document.getElementById('user-avatar').textContent='👤';
+  document.getElementById('user-first-name').textContent='Guest';
+  const hr=new Date().getHours();
+  const greet=hr<12?'Good morning,':hr<17?'Good afternoon,':'Good evening,';
+  const gt=document.getElementById('greeting-time');
+  if(gt)gt.textContent=greet;
+  loadLB();loadSkills();loadFeed();loadTraining();
+}
+
+async function bootApp(u){
+  user=u;
+  document.getElementById('auth-screen').style.display='none';
+  document.getElementById('app').style.display='block';
+  document.getElementById('bottom-nav').style.display='flex';
+  let{data:profData}=await sb.from('profiles').select('*').eq('id',u.id).single();
+  // If no profile exists (e.g. signed up before profile table existed), create one
+  if(!profData){
+    const meta=u.user_metadata||{};
+    const{data:newProf}=await sb.from('profiles').upsert({
+      id:u.id,
+      name:meta.name||u.email?.split('@')[0]||'Athlete',
+      city:meta.city||'Unknown',
+      country:meta.country||'',
+      email:u.email||'',
+      points:0,streak:0,skills_count:0,moves_count:0
+    },{onConflict:'id'}).select().single();
+    profData=newProf;
+  }
+  prof=profData;
+  if(prof){
+    const fn=prof.name.split(' ')[0];
+    const ini=initials(prof.name);
+    document.getElementById('user-first-name').textContent=fn;
+    const hr=new Date().getHours();
+    const greet=hr<12?'Good morning,':hr<17?'Good afternoon,':'Good evening,';
+    const gtEl=document.getElementById('greeting-time');
+    if(gtEl)gtEl.textContent=greet;
+    setText('user-avatar',ini);
+    setText('profile-av-lg',ini);
+    setText('profile-nm',prof.name);
+    setText('profile-loc',prof.city+', Earth');
+    updateStats();
+  }
+  await loadAll();
+}
+
+async function loadAll(){
+  await Promise.all([loadRecent(),loadLB(),loadSkills(),loadFeed(),loadTraining(),loadChallengeCount(),loadRank()]);
+}
+
+function updateStats(){
+  if(!prof)return;
+  const pts=prof.points||0,str=prof.streak||0;
+  ['stat-pts','p-pts'].forEach(id=>setText(id,pts));
+  ['stat-streak','streak-count','p-streak'].forEach(id=>setText(id,str));
+  setText('stat-moves',prof.moves_count||0);
+  ['stat-skills','p-skills'].forEach(id=>setText(id,prof.skills_count||0));
+  setText('skills-progress-val',(prof.skills_count||0)+' / 120');
+  document.getElementById('skills-prog-bar').style.width=((prof.skills_count||0)/120*100).toFixed(1)+'%';
+  const lv=LEVELS.find(l=>pts>=l.min&&pts<l.max)||LEVELS[LEVELS.length-1];
+  const pct=Math.min(((pts-lv.min)/(lv.max-lv.min)*100),100).toFixed(0);
+  setText('level-name',lv.emoji+' '+lv.n);
+  setText('level-pts',pts+'/'+lv.max+' pts');
+  document.getElementById('level-bar').style.width=pct+'%';
+  document.getElementById('level-bar').style.background='linear-gradient(90deg, '+lv.color+'88, '+lv.color+')';
+  const nextLv=LEVELS[LEVELS.indexOf(lv)+1];
+  setText('level-sub',nextLv?(lv.max-pts)+' pts to '+nextLv.emoji+' '+nextLv.n:'🖤 Elite — Maximum level reached!');
+}
+
+function setText(id,val){const e=document.getElementById(id);if(e)e.textContent=val;}
+
+async function loadRecent(){
+  if(!user)return;
+  const{data}=await sb.from('logs').select('*').eq('user_id',user.id).order('created_at',{ascending:false}).limit(5);
+  myLogs=data||[];
+  const el=document.getElementById('recent-activity');
+  if(!myLogs.length){el.innerHTML='<div class="empty">No activity yet. Log your first skill! 💪</div>';return;}
+  el.innerHTML=myLogs.map(l=>{
+    const sk=SKILLS.find(s=>s.n.toLowerCase()===l.skill_name.toLowerCase());
+    const dt=new Date(l.created_at).toLocaleDateString('en-IN',{month:'short',day:'numeric'});
+    return `<div class="activity-item">
+      <div class="activity-icon ${l.category==='calisthenics'?'cali':'parkour'}">${sk?.ico||'🏃'}</div>
+      <div class="activity-info"><div class="activity-name">${l.skill_name}</div><div class="activity-date">${dt} · ${l.category}</div></div>
+      <div><div class="activity-score">${l.score}</div>${l.is_personal_best?'<div class="pr-badge">PB</div>':''}</div>
+    </div>`;
+  }).join('');
+}
+
+async function loadLB(){
+  const el=document.getElementById('lb-list'),pod=document.getElementById('podium-section');
+  el.innerHTML='<div class="loading">Loading…</div>';
+  let q=sb.from('profiles').select('*').order('points',{ascending:false}).limit(25);
+  if(lbScope==='national'&&prof?.country)q=q.eq('country',prof.country);
+  if(lbScope==='city'&&selectedCity)q=q.ilike('city',selectedCity);
+  else if(lbScope==='city'&&!selectedCity){el.innerHTML='<div class="empty">Enter a city name above to see local rankings 📍</div>';pod.innerHTML='';return;}
+  const{data}=await q;
+  const scopeLabels={world:'🌍 World Rankings',national:'🏳️ '+(prof?.country||'National')+' Rankings',city:'📍 '+(selectedCity||'City')+' Rankings'};
+  setText('lb-scope-label',scopeLabels[lbScope]);
+  if(!data||!data.length){el.innerHTML='<div class="empty">No athletes yet. Be the first! 🏆</div>';pod.innerHTML='';return;}
+  if(data.length>=3){
+    pod.innerHTML=`<div class="podium">
+      <div class="podium-item second"><div class="podium-avatar" style="background:${COLORS[1]};color:#fff">${initials(data[1].name)}</div><div class="podium-name">${data[1].name.split(' ')[0]}</div><div class="podium-pts">${data[1].points} pts</div><div class="podium-base"><div class="podium-rank">2</div></div></div>
+      <div class="podium-item first"><div style="font-size:18px;margin-bottom:4px;">👑</div><div class="podium-avatar">${initials(data[0].name)}</div><div class="podium-name">${data[0].name.split(' ')[0]}</div><div class="podium-pts">${data[0].points} pts</div><div class="podium-base"><div class="podium-rank">1</div></div></div>
+      <div class="podium-item third"><div class="podium-avatar" style="background:${COLORS[2]};color:#fff">${data[2]?initials(data[2].name):'?'}</div><div class="podium-name">${data[2]?.name.split(' ')[0]||'—'}</div><div class="podium-pts">${data[2]?.points||0} pts</div><div class="podium-base"><div class="podium-rank">3</div></div></div>
+    </div>`;
+  }
+  el.innerHTML=data.slice(3).map((p,i)=>{
+    const isMe=user&&p.id===user.id;
+    return `<div class="lb-row ${isMe?'you':''}">
+      <div class="lb-pos">${i+4}</div>
+      <div class="lb-av" style="background:${COLORS[(i+4)%COLORS.length]};color:#fff">${initials(p.name)}</div>
+      <div style="flex:1"><div class="lb-nm">${p.name}${isMe?' (You)':''}</div><div class="lb-city">${p.city}</div></div>
+      <div><div class="lb-pts-val">${p.points}</div><div class="lb-pts-lbl">pts</div></div>
+    </div>`;
+  }).join('');
+}
+
+function setLBScope(el,scope){
+  document.querySelectorAll('.lb-scope-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  lbScope=scope;
+  const citySelector=document.getElementById('city-selector');
+  if(scope==='city'){
+    citySelector.style.display='block';
+    document.getElementById('city-input').focus();
+  } else {
+    citySelector.style.display='none';
+    loadLB();
+  }
+}
+
+function citySearch(val){
+  const sug=document.getElementById('city-suggestions');
+  if(!val||val.length<2){sug.style.display='none';return;}
+  const cities=['Mumbai','Delhi','Bangalore','Chennai','Kolkata','Hyderabad','Pune','Ahmedabad','London','Manchester','Birmingham','New York','Los Angeles','Toronto','Sydney','Melbourne','Dubai','Singapore','Bangkok','Paris','Berlin','Amsterdam'];
+  const filtered=cities.filter(c=>c.toLowerCase().startsWith(val.toLowerCase())).slice(0,5);
+  if(!filtered.length){sug.style.display='none';return;}
+  sug.innerHTML=filtered.map(c=>`<div onclick="selectCity('${c}')" style="padding:10px 14px;font-size:14px;color:var(--text);cursor:pointer;border-bottom:1px solid var(--border);">${c}</div>`).join('');
+  sug.style.display='block';
+}
+
+function selectCity(city){
+  document.getElementById('city-input').value=city;
+  document.getElementById('city-suggestions').style.display='none';
+  selectedCity=city;
+  loadLB();
+}
+function setLBFilter(el){document.querySelectorAll('#screen-rank .filter-pill').forEach(p=>p.classList.remove('active'));el.classList.add('active');}
+
+function loadSkills(filter='all'){
+  const list=filter==='all'?SKILLS:SKILLS.filter(s=>s.cat===filter);
+  document.getElementById('skills-list').innerHTML=list.map(sk=>{
+    const log=myLogs.find(l=>l.skill_name.toLowerCase()===sk.n.toLowerCase());
+    const unl=!!log;
+    return `<div class="skill-card ${unl?'unlocked':''}">
+      <div class="skill-icon">${sk.ico}</div>
+      <div class="skill-info"><div class="skill-nm">${sk.n}</div><div class="skill-diff">${sk.cat.charAt(0).toUpperCase()+sk.cat.slice(1)} · ${sk.d}</div></div>
+      <div class="skill-right">
+        <span class="skill-pts-badge">+${sk.p} pts</span>
+        <button class="yt-btn" onclick="window.open('${sk.yt}','_blank')">▶ Tutorial</button>
+        ${!isGuest?`<button class="log-btn-sm" onclick="showLogModal('${sk.n}','${sk.u}')">Log</button>`:''}
+        ${log?`<span class="best-score-txt">Best: ${log.score}</span>`:`<span class="best-score-txt">${unl?'':'🔒 Log to unlock'}</span>`}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterSkills(el,f){document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');loadSkills(f);}
+
+function loadTraining(){
+  document.getElementById('training-list').innerHTML=PLANS.map(plan=>`
+    <div class="training-card">
+      <div class="training-header">
+        <div class="plan-tag ${plan.free?'free':'paid'}">${plan.free?'✅ FREE':'🔒 PREMIUM'}</div>
+        <div class="plan-title">${plan.title}</div>
+        <div class="plan-desc">${plan.desc}</div>
+        <div class="plan-meta">
+          <div class="plan-meta-item"><strong>${plan.dur}</strong>Duration</div>
+          <div class="plan-meta-item"><strong>${plan.sess}</strong>Sessions</div>
+          <div class="plan-meta-item"><strong>${plan.lvl}</strong>Level</div>
+        </div>
+      </div>
+      <div class="plan-modules">
+        ${plan.modules.map(m=>`
+          <div class="plan-module" onclick="${plan.free?`showToast('Opening: ${m.t}')`:  `openPayment(${plan.id})`}">
+            <div class="mod-icon ${plan.free?'free':'locked'}">${plan.free?m.ico:'🔒'}</div>
+            <div class="mod-title">${m.t}</div>
+            <div class="mod-dur">${plan.free?m.dur:'Premium'}</div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="training-footer">
+        ${plan.free
+          ?`<button class="start-btn" onclick="showToast('Starting ${plan.title}! 🎯')">Start Free →</button>`
+          :`<div class="plan-price">₹${plan.price} <span>one-time · or ₹${plan.monthly}/mo</span></div>
+            <button class="unlock-btn" onclick="openPayment(${plan.id})">Unlock Full Programme →</button>`
+        }
+      </div>
+    </div>
+  `).join('');
+}
+
+function openPayment(id){
+  if(isGuest){showToast('Sign up to access training plans!');return;}
+  activePlan=PLANS.find(p=>p.id===id);if(!activePlan)return;
+  setText('pay-title',activePlan.title);
+  setText('pay-sub','Full access · '+activePlan.sess+' sessions');
+  setText('pay-amount','₹'+activePlan.price);
+  document.getElementById('payModal').classList.add('open');
+}
+
+function selectPayMethod(el,m){document.querySelectorAll('.pay-method').forEach(x=>x.classList.remove('selected'));el.classList.add('selected');payMethod=m;updatePayAmount();}
+function selectPayType(el,t){document.querySelectorAll('.pay-type-tab').forEach(x=>x.classList.remove('selected'));el.classList.add('selected');payType=t;
+  setText('pay-note',t==='sub'?'Monthly subscription. Cancel anytime.':'One-time payment. Lifetime access.');
+  updatePayAmount();}
+function updatePayAmount(){
+  if(!activePlan)return;
+  const price=payType==='sub'?activePlan.monthly:activePlan.price;
+  setText('pay-amount',payMethod==='stripe'?'$'+Math.round(price/83):'₹'+price);
+}
+function processPayment(){closeModal('payModal');showToast('Redirecting to '+(payMethod==='razorpay'?'Razorpay':'Stripe')+' — Coming soon! 🚀');}
+
+async function loadFeed(){
+  // Show post box or guest prompt
+  if(!isGuest&&user){
+    document.getElementById('post-box').style.display='block';
+    document.getElementById('guest-post-prompt').style.display='none';
+  } else {
+    document.getElementById('post-box').style.display='none';
+    document.getElementById('guest-post-prompt').style.display='block';
+  }
+
+  const el=document.getElementById('feed-list');
+
+  // Fetch both community posts and skill logs
+  const[postsRes,logsRes]=await Promise.all([
+    sb.from('posts').select('*, profiles(name,city)').order('created_at',{ascending:false}).limit(10),
+    sb.from('logs').select('*, profiles(name,city)').order('created_at',{ascending:false}).limit(10)
+  ]);
+
+  const posts=(postsRes.data||[]).map(p=>({...p,_type:'post'}));
+  const logs=(logsRes.data||[]).map(l=>({...l,_type:'log'}));
+
+  // Merge and sort by date
+  const combined=[...posts,...logs].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).slice(0,20);
+
+  if(!combined.length){el.innerHTML='<div class="empty">No activity yet. Be the first! 🔥</div>';return;}
+
+  el.innerHTML=combined.map((item,i)=>{
+    const p=item.profiles;if(!p)return'';
+    const dt=new Date(item.created_at).toLocaleDateString('en-IN',{month:'short',day:'numeric'});
+    const av=`<div class="feed-av" style="background:${COLORS[i%COLORS.length]};color:#fff">${initials(p.name)}</div>`;
+    const header=`<div class="feed-user">${av}<div><div class="feed-user-name">${p.name}</div><div class="feed-user-loc">${p.city||'Earth'}</div></div><div class="feed-time">${dt}</div></div>`;
+    const actions=`<div class="feed-actions"><button class="feed-action" onclick="this.classList.toggle('liked');this.textContent=this.classList.contains('liked')?'🔥 Fired!':'🔥 Fire'">🔥 Fire</button><button class="feed-action">💬 Comment</button></div>`;
+
+    if(item._type==='post'){
+      return `<div class="feed-card">
+        ${header}
+        <div style="font-size:14px;color:var(--text);line-height:1.6;margin-bottom:12px;padding:14px;background:rgba(0,170,255,0.04);border:1px solid rgba(0,170,255,0.08);border-radius:10px;">${item.content}</div>
+        ${actions}
+      </div>`;
+    } else {
+      const sk=SKILLS.find(s=>s.n.toLowerCase()===item.skill_name.toLowerCase());
+      return `<div class="feed-card">
+        ${header}
+        <div class="feed-achievement">
+          <div class="feed-ach-icon">${sk?.ico||'🏃'}</div>
+          <div style="flex:1"><div class="feed-ach-title">${item.is_personal_best?'New Personal Best 🌟':'Skill Logged'}</div><div class="feed-ach-sub">${item.skill_name} · ${item.category}</div></div>
+          <div class="feed-score-highlight">${item.score}</div>
+        </div>
+        ${actions}
+      </div>`;
+    }
+  }).filter(Boolean).join('');
+}
+
+// Post character counter
+document.addEventListener('DOMContentLoaded',()=>{
+  const ta=document.getElementById('post-text');
+  if(ta)ta.addEventListener('input',()=>{
+    const len=ta.value.length;
+    const counter=document.getElementById('post-char-count');
+    if(counter){counter.textContent=len+' / 280';counter.style.color=len>260?'#ff4d6d':'var(--muted)';}
+  });
+});
+
+async function submitPost(){
+  if(!user){showToast('Please sign in to post');return;}
+  const text=document.getElementById('post-text').value.trim();
+  if(!text){showToast('Write something first!');return;}
+  if(text.length>280){showToast('Keep it under 280 characters');return;}
+  if(!prof){
+    const{data:p}=await sb.from('profiles').select('*').eq('id',user.id).single();
+    if(!p){showToast('Profile not found. Please sign out and sign in again.');return;}
+    prof=p;
+  }
+  const{error}=await sb.from('posts').insert({user_id:user.id,content:text});
+  if(error){showToast('Error posting: '+error.message);return;}
+  document.getElementById('post-text').value='';
+  document.getElementById('post-char-count').textContent='0 / 280';
+  showToast('Posted! 🔥');
+  await loadFeed();
+}
+
+async function loadChallengeCount(){
+  const{count}=await sb.from('logs').select('*',{count:'exact',head:true}).ilike('skill_name','%pull%');
+  setText('challenge-count',count||0);
+}
+
+async function loadRank(){
+  if(!user)return;
+  const{data}=await sb.from('profiles').select('id').order('points',{ascending:false});
+  if(data){const r=data.findIndex(p=>p.id===user.id)+1;setText('profile-rank',r>0?`🏅 Rank #${r} — Global`:'🏅 Log skills to rank!');}
+}
+
+async function loadProfileSkills(){
+  if(!user)return;
+  const{data}=await sb.from('logs').select('*').eq('user_id',user.id).order('created_at',{ascending:false}).limit(5);
+  const el=document.getElementById('profile-skills');
+  if(!data||!data.length){el.innerHTML='<div class="empty">No skills logged yet. Start logging! 💪</div>';return;}
+  el.innerHTML=data.map(l=>{
+    const sk=SKILLS.find(s=>s.n.toLowerCase()===l.skill_name.toLowerCase());
+    return `<div class="skill-rank-row">
+      <div class="skill-rank-icon">${sk?.ico||'🏃'}</div>
+      <div style="flex:1"><div class="skill-rank-name">${l.skill_name}</div><div class="skill-rank-nat">${l.category}</div></div>
+      <div class="skill-rank-score">${l.score}</div>
+    </div>`;
+  }).join('');
+}
+
+function switchScreen(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+  const map={home:0,skills:1,rank:2,training:3,feed:4};
+  if(map[name]!==undefined)document.querySelectorAll('.nav-item')[map[name]]?.classList.add('active');
+  window.scrollTo(0,0);
+  if(name==='profile')loadProfileSkills();
+}
+
+function showLogModal(skill,unit){
+  if(isGuest){showToast('Sign up to log skills!');return;}
+  const sel=document.getElementById('m-skill');
+  sel.value=skill||'';
+  document.getElementById('m-score').placeholder=unit?`Score in ${unit}`:'Score (e.g. 24 reps, 3.2m)';
+  document.getElementById('logModal').classList.add('open');
+}
+
+function updateScorePlaceholder(){
+  const skill=document.getElementById('m-skill').value;
+  const sk=SKILLS.find(s=>s.n===skill);
+  if(sk)document.getElementById('m-score').placeholder='Score in '+sk.u+' (e.g. 24)';
+}
+
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+
+async function saveLog(){
+  if(!user){showToast('Please sign in first');return;}
+  const skill=document.getElementById('m-skill').value,score=val('m-score'),cat=document.getElementById('m-cat').value;
+  if(!skill||!score){showToast('Fill in skill name and score');return;}
+  // Ensure profile exists
+  if(!prof){
+    const{data:p}=await sb.from('profiles').select('*').eq('id',user.id).single();
+    if(!p){showToast('Profile not found. Please sign out and sign in again.');return;}
+    prof=p;
+  }
+  const sk=SKILLS.find(s=>s.n.toLowerCase()===skill.toLowerCase());
+  const pts=sk?.p||10;
+  const{data:ex}=await sb.from('logs').select('id').eq('user_id',user.id).eq('skill_name',skill);
+  const isPB=!ex||!ex.length;
+  const{error}=await sb.from('logs').insert({user_id:user.id,skill_name:skill,score,category:cat,is_personal_best:isPB,points_earned:pts});
+  if(error){showToast('Error: '+error.message);return;}
+  const np=(prof.points||0)+pts,nm=(prof.moves_count||0)+1,ns=isPB?(prof.skills_count||0)+1:(prof.skills_count||0);
+  await sb.from('profiles').update({points:np,moves_count:nm,skills_count:ns}).eq('id',user.id);
+  prof.points=np;prof.moves_count=nm;prof.skills_count=ns;
+  updateStats();closeModal('logModal');
+  showToast(`+${pts} pts! ${isPB?'🌟 New skill!':'💪 Keep going!'}`);
+  await loadAll();
+}
+
+async function signOut(){await sb.auth.signOut();location.reload();}
+
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+function initials(n){return n.split(' ').map(x=>x[0]).join('').toUpperCase().slice(0,2);}
+
+document.getElementById('logModal').addEventListener('click',e=>{if(e.target===document.getElementById('logModal'))closeModal('logModal');});
+document.getElementById('payModal').addEventListener('click',e=>{if(e.target===document.getElementById('payModal'))closeModal('payModal');});
+
+window.addEventListener('load',async()=>{
+  const{data:{session}}=await sb.auth.getSession();
+  if(session?.user)await bootApp(session.user);
+});
+</script>
+</body>
+</html>
