@@ -282,6 +282,45 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
 .toast.show { transform: translateX(-50%) translateY(0); }
 .loading { text-align: center; padding: 40px; color: var(--muted); font-size: 14px; }
 .empty { text-align: center; padding: 32px; color: var(--muted); font-size: 14px; }
+
+/* ── CALENDAR ── */
+.wod-card { background: linear-gradient(135deg, #001a3a 0%, #002a5a 100%); border: 1px solid rgba(0,170,255,0.3); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; position: relative; overflow: hidden; }
+.wod-card::before { content: ''; position: absolute; right: -20px; top: -20px; width: 120px; height: 120px; border-radius: 50%; background: rgba(0,170,255,0.06); }
+.wod-date-badge { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--accent3); margin-bottom: 8px; }
+.wod-title { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 1px; color: #fff; margin-bottom: 6px; }
+.wod-desc { font-size: 14px; color: rgba(255,255,255,0.75); line-height: 1.6; margin-bottom: 16px; }
+.wod-meta { display: flex; gap: 16px; margin-bottom: 16px; }
+.wod-meta-item { font-size: 11px; color: rgba(255,255,255,0.5); }
+.wod-meta-item strong { display: block; font-size: 16px; color: var(--accent3); font-family: 'Space Mono', monospace; }
+.wod-complete-btn { width: 100%; padding: 13px; background: linear-gradient(135deg, #0055dd, #00aaff); color: #fff; border: none; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 15px; cursor: pointer; box-shadow: 0 4px 16px rgba(0,170,255,0.4); transition: transform .15s; }
+.wod-complete-btn:active { transform: scale(0.98); }
+.wod-complete-btn.done { background: linear-gradient(135deg, #007a3d, #00cc88); box-shadow: 0 4px 16px rgba(0,200,120,0.3); }
+.wod-complete-btn.done::before { content: '✅ '; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 20px; }
+.cal-day { aspect-ratio: 1; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: var(--surface); color: var(--muted); transition: all .2s; }
+.cal-day.has-wod { color: var(--text); border-color: rgba(0,170,255,0.2); }
+.cal-day.today { border-color: var(--accent); color: var(--accent); font-weight: 700; }
+.cal-day.completed { background: rgba(0,200,120,0.15); border-color: rgba(0,200,120,0.4); color: #00cc88; }
+.cal-day.empty { opacity: 0; pointer-events: none; }
+.cal-day-header { font-size: 10px; color: var(--muted); text-align: center; margin-bottom: 4px; font-weight: 600; }
+.streak-banner { background: linear-gradient(135deg, #1a0a00, #2a1500); border: 1px solid rgba(255,150,0,0.3); border-radius: var(--radius); padding: 18px; margin-bottom: 16px; display: flex; align-items: center; gap: 14px; }
+.streak-fire-big { font-size: 40px; flex-shrink: 0; }
+.streak-info { flex: 1; }
+.streak-count-big { font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: #ff8040; letter-spacing: 1px; line-height: 1; }
+.streak-label { font-size: 12px; color: rgba(255,150,0,0.7); margin-top: 2px; }
+.streak-dots { display: flex; gap: 6px; margin-top: 8px; }
+.streak-dot { width: 28px; height: 8px; border-radius: 4px; background: var(--surface2); }
+.streak-dot.filled { background: #ff8040; box-shadow: 0 0 8px rgba(255,128,64,0.4); }
+.streak-claim-btn { padding: 10px 16px; background: rgba(255,150,0,0.15); border: 1px solid rgba(255,150,0,0.4); border-radius: 10px; color: #ff8040; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+.badge-popup { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 400; display: flex; align-items: center; justify-content: center; padding: 24px; opacity: 0; pointer-events: none; transition: opacity .3s; }
+.badge-popup.open { opacity: 1; pointer-events: all; }
+.badge-card { background: linear-gradient(135deg, #0a1530, #001a40); border: 1px solid rgba(255,150,0,0.4); border-radius: 24px; padding: 32px 24px; text-align: center; max-width: 340px; width: 100%; box-shadow: 0 20px 60px rgba(255,100,0,0.2); }
+.badge-emoji { font-size: 72px; margin-bottom: 12px; display: block; }
+.badge-title { font-family: 'Bebas Neue', sans-serif; font-size: 32px; letter-spacing: 1px; color: #ff8040; margin-bottom: 6px; }
+.badge-sub { font-size: 14px; color: rgba(255,255,255,0.7); margin-bottom: 24px; line-height: 1.6; }
+.badge-pts { font-family: 'Space Mono', monospace; font-size: 20px; color: var(--accent3); margin-bottom: 20px; }
+.badge-share-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, #0055dd, #00aaff); color: #fff; border: none; border-radius: 12px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; margin-bottom: 10px; box-shadow: 0 4px 16px rgba(0,170,255,0.4); }
+.badge-skip-btn { width: 100%; padding: 10px; background: none; border: none; color: var(--muted); font-size: 13px; cursor: pointer; }
 </style>
 </head>
 <body>
@@ -344,6 +383,14 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
       <div class="prog-bar"><div class="prog-fill" id="level-bar" style="width:0%"></div></div>
       <div class="level-sub-txt" id="level-sub">Keep going!</div>
     </div>
+    <div style="display:flex;gap:8px;margin-bottom:20px;">
+      <button onclick="shareStats()" style="flex:1;padding:10px;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;">
+        📊 Share My Stats
+      </button>
+      <button onclick="shareWorkout()" style="flex:1;padding:10px;background:linear-gradient(135deg,#0055dd,#00aaff);border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;">
+        💪 Share Workout
+      </button>
+    </div>
     <div class="section-header">
       <div class="section-title">Monthly Challenge</div>
       <div class="see-all">March 2026</div>
@@ -404,10 +451,11 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
       <div class="prog-bar"><div class="prog-fill" id="skills-prog-bar" style="width:0%"></div></div>
     </div>
     <div class="cat-tabs">
-      <div class="cat-tab active" onclick="filterSkills(this,'all')">All</div>
+      <div class="cat-tab active" onclick="filterSkills(this,'all')">All Belts</div>
       <div class="cat-tab" onclick="filterSkills(this,'parkour')">Parkour</div>
       <div class="cat-tab" onclick="filterSkills(this,'calisthenics')">Calisthenics</div>
       <div class="cat-tab" onclick="filterSkills(this,'acrobatics')">Acrobatics</div>
+      <div class="cat-tab" onclick="filterSkills(this,'movement')">Movement</div>
     </div>
     <div id="skills-list"></div>
   </div>
@@ -439,6 +487,29 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
     <div id="feed-list"><div class="loading">Loading…</div></div>
   </div>
 
+  <!-- CALENDAR / WOD -->
+  <div id="screen-calendar" class="screen">
+    <div class="greeting">
+      <div class="greeting-name">Workout <span>of the Day</span></div>
+    </div>
+    <div id="streak-banner-wrap"></div>
+    <div id="wod-today"><div class="loading">Loading today's workout…</div></div>
+    <div class="section-header">
+      <div class="section-title">This Month</div>
+      <div class="see-all" id="cal-month-label"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:8px;">
+      <div class="cal-day-header">S</div><div class="cal-day-header">M</div><div class="cal-day-header">T</div>
+      <div class="cal-day-header">W</div><div class="cal-day-header">T</div><div class="cal-day-header">F</div><div class="cal-day-header">S</div>
+    </div>
+    <div class="cal-grid" id="cal-grid"></div>
+    <div style="display:flex;gap:12px;font-size:11px;color:var(--muted);margin-bottom:20px;">
+      <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(0,200,120,0.4);margin-right:4px;"></span>Completed</span>
+      <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;border:1px solid var(--accent);margin-right:4px;"></span>Today</span>
+      <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;border:1px solid rgba(0,170,255,0.2);margin-right:4px;"></span>Has workout</span>
+    </div>
+  </div>
+
   <!-- PROFILE -->
   <div id="screen-profile" class="screen">
     <div class="profile-hero">
@@ -468,7 +539,43 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
   <div class="nav-item" onclick="switchScreen('skills')"><div class="nav-icon">⚡</div><div class="nav-label">Skills</div></div>
   <div class="nav-item" onclick="switchScreen('rank')"><div class="nav-icon">🏆</div><div class="nav-label">Rank</div></div>
   <div class="nav-item" onclick="switchScreen('training')"><div class="nav-icon">🎯</div><div class="nav-label">Train</div></div>
+  <div class="nav-item" onclick="switchScreen('calendar')"><div class="nav-icon">📅</div><div class="nav-label">WOD</div></div>
   <div class="nav-item" onclick="switchScreen('feed')"><div class="nav-icon">📡</div><div class="nav-label">Feed</div></div>
+</div>
+
+<!-- BELT TEST MODAL -->
+<div class="modal-overlay" id="belt-test-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('belt-test-modal')">✕</button>
+    <div class="modal-title" id="belt-test-title">Belt Test</div>
+    <div id="belt-test-body"></div>
+  </div>
+</div>
+
+<!-- STREAK BADGE POPUP -->
+<div class="badge-popup" id="streak-badge-popup">
+  <div class="badge-card">
+    <span class="badge-emoji" id="badge-emoji">🔥</span>
+    <div class="badge-title" id="badge-title">6 DAY STREAK!</div>
+    <div class="badge-sub" id="badge-sub">You've trained 6 days straight. You're unstoppable.</div>
+    <div class="badge-pts" id="badge-pts">+5 bonus points</div>
+    <button class="badge-share-btn" onclick="claimStreakWithShare()">Share & Claim +10 pts 🔥</button>
+    <button class="badge-skip-btn" onclick="claimStreakNoShare()">Skip sharing — claim +5 pts only</button>
+  </div>
+</div>
+
+<!-- SHARE MODAL -->
+<div class="modal-overlay" id="share-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('share-modal')">✕</button>
+    <div class="modal-title">Share</div>
+    <canvas id="share-canvas" style="width:100%;border-radius:12px;margin-bottom:16px;display:block;"></canvas>
+    <div style="display:flex;gap:8px;margin-bottom:12px;">
+      <button onclick="downloadShareCard()" style="flex:1;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;">⬇ Download</button>
+      <button onclick="shareToNative()" style="flex:1;padding:12px;background:linear-gradient(135deg,#0055dd,#00aaff);border:none;border-radius:10px;font-size:13px;font-weight:600;color:#fff;cursor:pointer;">↗ Share</button>
+    </div>
+    <div style="font-size:11px;color:var(--muted);text-align:center;">Download and share on Instagram, WhatsApp or any platform</div>
+  </div>
 </div>
 
 <!-- LOG MODAL -->
@@ -478,31 +585,53 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
     <div class="modal-title">Log Skill</div>
     <select class="modal-input" id="m-skill" onchange="updateScorePlaceholder()">
       <option value="">Select a skill...</option>
-      <optgroup label="🤸 Calisthenics">
-        <option value="Pull-ups">Pull-ups (reps)</option>
+      <optgroup label="🤍 White Belt — Beginner">
+        <option value="Forward Roll">Forward Roll (reps)</option>
+        <option value="Shoulder Roll">Shoulder Roll (reps)</option>
         <option value="Push-ups">Push-ups (reps)</option>
-        <option value="Muscle-up">Muscle-up (reps)</option>
-        <option value="Dips">Dips (reps)</option>
-        <option value="Handstand Push-up">Handstand Push-up (reps)</option>
-        <option value="L-sit Hold">L-sit Hold (seconds)</option>
-        <option value="Front Lever">Front Lever (seconds)</option>
-        <option value="Back Lever">Back Lever (seconds)</option>
-      </optgroup>
-      <optgroup label="🏃 Parkour">
-        <option value="Precision Jump">Precision Jump (metres)</option>
-        <option value="Kong Vault">Kong Vault (reps)</option>
-        <option value="Speed Vault">Speed Vault (reps)</option>
-        <option value="Dash Vault">Dash Vault (reps)</option>
-        <option value="Cat Leap">Cat Leap (metres)</option>
-        <option value="Wall Run">Wall Run (metres)</option>
-        <option value="Tic Tac">Tic Tac (reps)</option>
+        <option value="Squat Jump">Squat Jump (reps)</option>
+        <option value="Landing Technique">Landing Technique (reps)</option>
+        <option value="Balance Walk">Balance Walk (metres)</option>
+        <option value="Precision Jump (1m)">Precision Jump 1m (metres)</option>
+        <option value="Cat Leap (low wall)">Cat Leap low wall (reps)</option>
         <option value="Lazy Vault">Lazy Vault (reps)</option>
+        <option value="Pull-ups (5 reps)">Pull-ups 5 reps (reps)</option>
       </optgroup>
-      <optgroup label="🔄 Acrobatics">
+      <optgroup label="💛 Yellow Belt — Intermediate">
+        <option value="Speed Vault">Speed Vault (reps)</option>
+        <option value="Kong Vault">Kong Vault (reps)</option>
+        <option value="Dash Vault">Dash Vault (reps)</option>
+        <option value="Tic Tac">Tic Tac (reps)</option>
+        <option value="Wall Run (3m)">Wall Run 3m (metres)</option>
+        <option value="Pull-ups (15 reps)">Pull-ups 15 reps (reps)</option>
+        <option value="Dips (15 reps)">Dips 15 reps (reps)</option>
+        <option value="Precision Jump (2m)">Precision Jump 2m (metres)</option>
+        <option value="Cat Leap (height)">Cat Leap height (metres)</option>
+        <option value="L-sit Hold">L-sit Hold (seconds)</option>
+      </optgroup>
+      <optgroup label="🧡 Orange Belt — Advanced">
+        <option value="Muscle-up">Muscle-up (reps)</option>
+        <option value="Handstand Hold">Handstand Hold (seconds)</option>
         <option value="Backflip">Backflip (reps)</option>
         <option value="Front Flip">Front Flip (reps)</option>
+        <option value="Double Kong Vault">Double Kong Vault (reps)</option>
+        <option value="Wall Spin">Wall Spin (reps)</option>
+        <option value="Precision Jump (3m)">Precision Jump 3m (metres)</option>
+        <option value="Muscle-up (5 reps)">Muscle-up 5 reps (reps)</option>
         <option value="Side Flip">Side Flip (reps)</option>
+        <option value="Handstand Push-up">Handstand Push-up (reps)</option>
+      </optgroup>
+      <optgroup label="💚 Green Belt — Elite">
+        <option value="Front Lever">Front Lever (seconds)</option>
+        <option value="Back Lever">Back Lever (seconds)</option>
         <option value="Gainer">Gainer (reps)</option>
+        <option value="Double Backflip">Double Backflip (reps)</option>
+        <option value="Planche Hold">Planche Hold (seconds)</option>
+        <option value="One Arm Pull-up">One Arm Pull-up (reps)</option>
+        <option value="360 Wallspin">360 Wallspin (reps)</option>
+        <option value="Aerial Cartwheel">Aerial Cartwheel (reps)</option>
+        <option value="Precision Jump (4m+)">Precision Jump 4m+ (metres)</option>
+        <option value="Full Twist Backflip">Full Twist Backflip (reps)</option>
       </optgroup>
     </select>
     <input class="modal-input" id="m-score" placeholder="Score (e.g. 24 reps, 3.2m)">
@@ -547,32 +676,83 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
 </div>
 
 <script>
+/* Run this SQL in Supabase:
+create table if not exists belt_submissions (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid references profiles(id),
+  belt text not null,
+  video_url text not null,
+  notes text default \'\',
+  status text default \'pending\',
+  community_votes integer default 0,
+  created_at timestamp default now()
+);
+alter table belt_submissions enable row level security;
+create policy "belt_sub_select" on belt_submissions for select using (true);
+create policy "belt_sub_insert" on belt_submissions for insert with check (auth.uid() = user_id);
+*/
 const SB_URL='https://sgtijeghefziaknuomup.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNndGlqZWdoZWZ6aWFrbnVvbXVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxODI1OTksImV4cCI6MjA4OTc1ODU5OX0._Qd2eKT6c-bbwR9aEpFQnSJnZMgDfEmwfhGh1QULtjw';
 const sb=supabase.createClient(SB_URL,SB_KEY);
 
+// Belt levels: white=beginner, yellow=intermediate, orange=advanced, green=elite
 const SKILLS=[
-  {id:1,n:'Pull-ups',cat:'calisthenics',d:'Intermediate',p:20,ico:'💪',u:'reps',yt:'https://www.youtube.com/results?search_query=pull+ups+tutorial+form'},
-  {id:2,n:'Push-ups',cat:'calisthenics',d:'Beginner',p:10,ico:'🤸',u:'reps',yt:'https://www.youtube.com/results?search_query=perfect+push+up+tutorial'},
-  {id:3,n:'Muscle-up',cat:'calisthenics',d:'Advanced',p:30,ico:'🔥',u:'reps',yt:'https://www.youtube.com/results?search_query=muscle+up+tutorial'},
-  {id:4,n:'Dips',cat:'calisthenics',d:'Beginner',p:10,ico:'💺',u:'reps',yt:'https://www.youtube.com/results?search_query=parallel+bar+dips+tutorial'},
-  {id:5,n:'Handstand Push-up',cat:'calisthenics',d:'Advanced',p:40,ico:'🙃',u:'reps',yt:'https://www.youtube.com/results?search_query=handstand+push+up+tutorial'},
-  {id:6,n:'L-sit Hold',cat:'calisthenics',d:'Intermediate',p:25,ico:'⚡',u:'seconds',yt:'https://www.youtube.com/results?search_query=l+sit+tutorial'},
-  {id:7,n:'Front Lever',cat:'calisthenics',d:'Elite',p:60,ico:'🌟',u:'seconds',yt:'https://www.youtube.com/results?search_query=front+lever+progression'},
-  {id:8,n:'Back Lever',cat:'calisthenics',d:'Elite',p:60,ico:'⭐',u:'seconds',yt:'https://www.youtube.com/results?search_query=back+lever+tutorial'},
-  {id:9,n:'Precision Jump',cat:'parkour',d:'Beginner',p:15,ico:'🏃',u:'metres',yt:'https://www.youtube.com/results?search_query=parkour+precision+jump+tutorial'},
-  {id:10,n:'Kong Vault',cat:'parkour',d:'Intermediate',p:25,ico:'🌀',u:'reps',yt:'https://www.youtube.com/results?search_query=kong+vault+tutorial'},
-  {id:11,n:'Speed Vault',cat:'parkour',d:'Beginner',p:15,ico:'💨',u:'reps',yt:'https://www.youtube.com/results?search_query=speed+vault+parkour+tutorial'},
-  {id:12,n:'Dash Vault',cat:'parkour',d:'Intermediate',p:20,ico:'🏄',u:'reps',yt:'https://www.youtube.com/results?search_query=dash+vault+parkour'},
-  {id:13,n:'Cat Leap',cat:'parkour',d:'Beginner',p:15,ico:'🐱',u:'metres',yt:'https://www.youtube.com/results?search_query=cat+leap+parkour+tutorial'},
-  {id:14,n:'Wall Run',cat:'parkour',d:'Intermediate',p:20,ico:'🧱',u:'metres',yt:'https://www.youtube.com/results?search_query=wall+run+parkour+tutorial'},
-  {id:15,n:'Tic Tac',cat:'parkour',d:'Intermediate',p:20,ico:'↗️',u:'reps',yt:'https://www.youtube.com/results?search_query=tic+tac+parkour+tutorial'},
-  {id:16,n:'Backflip',cat:'acrobatics',d:'Advanced',p:50,ico:'🔄',u:'reps',yt:'https://www.youtube.com/results?search_query=backflip+tutorial+step+by+step'},
-  {id:17,n:'Front Flip',cat:'acrobatics',d:'Advanced',p:45,ico:'🔃',u:'reps',yt:'https://www.youtube.com/results?search_query=front+flip+tutorial'},
-  {id:18,n:'Side Flip',cat:'acrobatics',d:'Advanced',p:45,ico:'↩️',u:'reps',yt:'https://www.youtube.com/results?search_query=side+flip+freerunning+tutorial'},
-  {id:19,n:'Gainer',cat:'acrobatics',d:'Elite',p:70,ico:'🎯',u:'reps',yt:'https://www.youtube.com/results?search_query=gainer+flip+tutorial'},
-  {id:20,n:'Lazy Vault',cat:'parkour',d:'Beginner',p:10,ico:'😎',u:'reps',yt:'https://www.youtube.com/results?search_query=lazy+vault+parkour+tutorial'},
+  // ── WHITE BELT — Beginner (10 skills) ──
+  {id:1,n:'Forward Roll',cat:'movement',d:'Beginner',belt:'white',p:10,ico:'🔁',u:'reps',yt:'https://www.youtube.com/results?search_query=forward+roll+tutorial+parkour'},
+  {id:2,n:'Shoulder Roll',cat:'movement',d:'Beginner',belt:'white',p:10,ico:'🌀',u:'reps',yt:'https://www.youtube.com/results?search_query=shoulder+roll+parkour+tutorial'},
+  {id:3,n:'Push-ups',cat:'calisthenics',d:'Beginner',belt:'white',p:10,ico:'🤸',u:'reps',yt:'https://www.youtube.com/results?search_query=perfect+push+up+tutorial'},
+  {id:4,n:'Squat Jump',cat:'movement',d:'Beginner',belt:'white',p:10,ico:'⬆️',u:'reps',yt:'https://www.youtube.com/results?search_query=squat+jump+tutorial'},
+  {id:5,n:'Landing Technique',cat:'movement',d:'Beginner',belt:'white',p:15,ico:'🦵',u:'reps',yt:'https://www.youtube.com/results?search_query=parkour+landing+technique+tutorial'},
+  {id:6,n:'Balance Walk',cat:'movement',d:'Beginner',belt:'white',p:10,ico:'⚖️',u:'metres',yt:'https://www.youtube.com/results?search_query=balance+beam+walk+tutorial'},
+  {id:7,n:'Precision Jump (1m)',cat:'parkour',d:'Beginner',belt:'white',p:15,ico:'🏃',u:'metres',yt:'https://www.youtube.com/results?search_query=parkour+precision+jump+tutorial'},
+  {id:8,n:'Cat Leap (low wall)',cat:'parkour',d:'Beginner',belt:'white',p:15,ico:'🐱',u:'reps',yt:'https://www.youtube.com/results?search_query=cat+leap+parkour+tutorial'},
+  {id:9,n:'Lazy Vault',cat:'parkour',d:'Beginner',belt:'white',p:15,ico:'😎',u:'reps',yt:'https://www.youtube.com/results?search_query=lazy+vault+parkour+tutorial'},
+  {id:10,n:'Pull-ups (5 reps)',cat:'calisthenics',d:'Beginner',belt:'white',p:15,ico:'💪',u:'reps',yt:'https://www.youtube.com/results?search_query=pull+ups+tutorial+form'},
+
+  // ── YELLOW BELT — Intermediate (10 skills) ──
+  {id:11,n:'Speed Vault',cat:'parkour',d:'Intermediate',belt:'yellow',p:20,ico:'💨',u:'reps',yt:'https://www.youtube.com/results?search_query=speed+vault+parkour+tutorial'},
+  {id:12,n:'Kong Vault',cat:'parkour',d:'Intermediate',belt:'yellow',p:25,ico:'🦍',u:'reps',yt:'https://www.youtube.com/results?search_query=kong+vault+tutorial'},
+  {id:13,n:'Dash Vault',cat:'parkour',d:'Intermediate',belt:'yellow',p:20,ico:'🏄',u:'reps',yt:'https://www.youtube.com/results?search_query=dash+vault+parkour'},
+  {id:14,n:'Tic Tac',cat:'parkour',d:'Intermediate',belt:'yellow',p:20,ico:'↗️',u:'reps',yt:'https://www.youtube.com/results?search_query=tic+tac+parkour+tutorial'},
+  {id:15,n:'Wall Run (3m)',cat:'parkour',d:'Intermediate',belt:'yellow',p:25,ico:'🧱',u:'metres',yt:'https://www.youtube.com/results?search_query=wall+run+parkour+tutorial'},
+  {id:16,n:'Pull-ups (15 reps)',cat:'calisthenics',d:'Intermediate',belt:'yellow',p:20,ico:'💪',u:'reps',yt:'https://www.youtube.com/results?search_query=pull+ups+tutorial+form'},
+  {id:17,n:'Dips (15 reps)',cat:'calisthenics',d:'Intermediate',belt:'yellow',p:20,ico:'💺',u:'reps',yt:'https://www.youtube.com/results?search_query=parallel+bar+dips+tutorial'},
+  {id:18,n:'Precision Jump (2m)',cat:'parkour',d:'Intermediate',belt:'yellow',p:25,ico:'🎯',u:'metres',yt:'https://www.youtube.com/results?search_query=parkour+precision+jump+tutorial'},
+  {id:19,n:'Cat Leap (height)',cat:'parkour',d:'Intermediate',belt:'yellow',p:25,ico:'🐱',u:'metres',yt:'https://www.youtube.com/results?search_query=cat+leap+parkour+tutorial'},
+  {id:20,n:'L-sit Hold',cat:'calisthenics',d:'Intermediate',belt:'yellow',p:25,ico:'⚡',u:'seconds',yt:'https://www.youtube.com/results?search_query=l+sit+tutorial'},
+
+  // ── ORANGE BELT — Advanced (10 skills) ──
+  {id:21,n:'Muscle-up',cat:'calisthenics',d:'Advanced',belt:'orange',p:35,ico:'🔥',u:'reps',yt:'https://www.youtube.com/results?search_query=muscle+up+tutorial'},
+  {id:22,n:'Handstand Hold',cat:'calisthenics',d:'Advanced',belt:'orange',p:30,ico:'🙃',u:'seconds',yt:'https://www.youtube.com/results?search_query=handstand+tutorial'},
+  {id:23,n:'Backflip',cat:'acrobatics',d:'Advanced',belt:'orange',p:50,ico:'🔄',u:'reps',yt:'https://www.youtube.com/results?search_query=backflip+tutorial+step+by+step'},
+  {id:24,n:'Front Flip',cat:'acrobatics',d:'Advanced',belt:'orange',p:45,ico:'🔃',u:'reps',yt:'https://www.youtube.com/results?search_query=front+flip+tutorial'},
+  {id:25,n:'Double Kong Vault',cat:'parkour',d:'Advanced',belt:'orange',p:40,ico:'🦍',u:'reps',yt:'https://www.youtube.com/results?search_query=double+kong+vault+tutorial'},
+  {id:26,n:'Wall Spin',cat:'parkour',d:'Advanced',belt:'orange',p:40,ico:'🌪️',u:'reps',yt:'https://www.youtube.com/results?search_query=wall+spin+parkour+tutorial'},
+  {id:27,n:'Precision Jump (3m)',cat:'parkour',d:'Advanced',belt:'orange',p:35,ico:'🏹',u:'metres',yt:'https://www.youtube.com/results?search_query=parkour+precision+jump+advanced'},
+  {id:28,n:'Muscle-up (5 reps)',cat:'calisthenics',d:'Advanced',belt:'orange',p:40,ico:'💪',u:'reps',yt:'https://www.youtube.com/results?search_query=muscle+up+tutorial'},
+  {id:29,n:'Side Flip',cat:'acrobatics',d:'Advanced',belt:'orange',p:45,ico:'↩️',u:'reps',yt:'https://www.youtube.com/results?search_query=side+flip+freerunning+tutorial'},
+  {id:30,n:'Handstand Push-up',cat:'calisthenics',d:'Advanced',belt:'orange',p:45,ico:'🤜',u:'reps',yt:'https://www.youtube.com/results?search_query=handstand+push+up+tutorial'},
+
+  // ── GREEN BELT — Elite (10 skills) ──
+  {id:31,n:'Front Lever',cat:'calisthenics',d:'Elite',belt:'green',p:60,ico:'🌟',u:'seconds',yt:'https://www.youtube.com/results?search_query=front+lever+progression'},
+  {id:32,n:'Back Lever',cat:'calisthenics',d:'Elite',belt:'green',p:60,ico:'⭐',u:'seconds',yt:'https://www.youtube.com/results?search_query=back+lever+tutorial'},
+  {id:33,n:'Gainer',cat:'acrobatics',d:'Elite',belt:'green',p:70,ico:'🎯',u:'reps',yt:'https://www.youtube.com/results?search_query=gainer+flip+tutorial'},
+  {id:34,n:'Double Backflip',cat:'acrobatics',d:'Elite',belt:'green',p:80,ico:'🔄',u:'reps',yt:'https://www.youtube.com/results?search_query=double+backflip+tutorial'},
+  {id:35,n:'Planche Hold',cat:'calisthenics',d:'Elite',belt:'green',p:75,ico:'✈️',u:'seconds',yt:'https://www.youtube.com/results?search_query=planche+tutorial+progression'},
+  {id:36,n:'One Arm Pull-up',cat:'calisthenics',d:'Elite',belt:'green',p:80,ico:'💪',u:'reps',yt:'https://www.youtube.com/results?search_query=one+arm+pull+up+tutorial'},
+  {id:37,n:'360 Wallspin',cat:'parkour',d:'Elite',belt:'green',p:65,ico:'🌀',u:'reps',yt:'https://www.youtube.com/results?search_query=360+wall+spin+parkour'},
+  {id:38,n:'Aerial Cartwheel',cat:'acrobatics',d:'Elite',belt:'green',p:70,ico:'🤸',u:'reps',yt:'https://www.youtube.com/results?search_query=aerial+cartwheel+tutorial'},
+  {id:39,n:'Precision Jump (4m+)',cat:'parkour',d:'Elite',belt:'green',p:75,ico:'🏹',u:'metres',yt:'https://www.youtube.com/results?search_query=parkour+precision+jump+record'},
+  {id:40,n:'Full Twist Backflip',cat:'acrobatics',d:'Elite',belt:'green',p:90,ico:'🌪️',u:'reps',yt:'https://www.youtube.com/results?search_query=full+twist+backflip+tutorial'},
 ];
+
+const BELT_ORDER=['white','yellow','orange','green'];
+const BELT_INFO={
+  white:{emoji:'🤍',label:'White Belt',color:'#e0e0e0',next:'yellow'},
+  yellow:{emoji:'💛',label:'Yellow Belt',color:'#ffd700',next:'orange'},
+  orange:{emoji:'🧡',label:'Orange Belt',color:'#ff8c00',next:'green'},
+  green:{emoji:'💚',label:'Green Belt',color:'#00cc88',next:null},
+};
 
 const PLANS=[
   {id:1,title:'Beginner Foundations',free:true,price:0,monthly:0,desc:'Build the strength and body control you need for everything else.',dur:'4 weeks',lvl:'Beginner',sess:16,modules:[
@@ -602,15 +782,14 @@ const PLANS=[
   ]},
 ];
 
+// XP levels — purely for points progress bar, NOT related to belt system
 const LEVELS=[
-  {n:'White Belt',min:0,max:100,color:'#ffffff',emoji:'🤍'},
-  {n:'Yellow Belt',min:100,max:300,color:'#ffd700',emoji:'💛'},
-  {n:'Orange Belt',min:300,max:600,color:'#ff8c00',emoji:'🧡'},
-  {n:'Green Belt',min:600,max:1000,color:'#00cc88',emoji:'💚'},
-  {n:'Blue Belt',min:1000,max:1500,color:'#00aaff',emoji:'💙'},
-  {n:'Purple Belt',min:1500,max:2500,color:'#9b59b6',emoji:'💜'},
-  {n:'Brown Belt',min:2500,max:4000,color:'#8B4513',emoji:'🤎'},
-  {n:'Black Belt',min:4000,max:99999,color:'#1a1a1a',emoji:'🖤'},
+  {n:'Rookie',min:0,max:150,color:'#aaaaaa'},
+  {n:'Mover',min:150,max:400,color:'#00aaff'},
+  {n:'Tracker',min:400,max:800,color:'#00cc88'},
+  {n:'Athlete',min:800,max:1500,color:'#ffd700'},
+  {n:'Pro',min:1500,max:3000,color:'#ff8c00'},
+  {n:'Elite',min:3000,max:99999,color:'#ff4d6d'},
 ];
 const COLORS=['#0066ff','#0099ff','#00bbff','#0044cc','#3388ff','#55aaff','#2277dd'];
 
@@ -627,7 +806,7 @@ async function doAuth(){
     const{data,error}=await sb.auth.signUp({email,password:pass});
     if(error){showErr(error.message);return;}
     if(data.user){
-      const{error:pe}=await sb.from('profiles').upsert({id:data.user.id,name,city,email,country:country||'',points:0,streak:0,skills_count:0,moves_count:0},{onConflict:'id'});
+      const{error:pe}=await sb.from('profiles').upsert({id:data.user.id,name,city,email,country:country||'',points:0,streak:0,skills_count:0,moves_count:0,current_belt:'white'},{onConflict:'id'});
       if(pe)console.error('Profile upsert error:',pe.message);
       showOk('✅ Account created! Check your email to verify, then sign in.');
       toggleAuthMode();
@@ -687,7 +866,7 @@ async function bootApp(u){
       city:meta.city||'Unknown',
       country:meta.country||'',
       email:u.email||'',
-      points:0,streak:0,skills_count:0,moves_count:0
+      points:0,streak:0,skills_count:0,moves_count:0,current_belt:'white'
     },{onConflict:'id'}).select().single();
     profData=newProf;
   }
@@ -724,23 +903,31 @@ function updateStats(){
   document.getElementById('skills-prog-bar').style.width=((prof.skills_count||0)/120*100).toFixed(1)+'%';
   const lv=LEVELS.find(l=>pts>=l.min&&pts<l.max)||LEVELS[LEVELS.length-1];
   const pct=Math.min(((pts-lv.min)/(lv.max-lv.min)*100),100).toFixed(0);
-  setText('level-name',lv.emoji+' '+lv.n);
-  setText('level-pts',pts+'/'+lv.max+' pts');
+  // Show belt + XP rank separately — belt is earned, XP rank is points-based
+  const userBeltInfo=BELT_INFO[prof.current_belt||'white'];
+  setText('level-name',userBeltInfo.emoji+' '+userBeltInfo.label+' · '+lv.n);
+  setText('level-pts',pts+' pts');
   document.getElementById('level-bar').style.width=pct+'%';
   document.getElementById('level-bar').style.background='linear-gradient(90deg, '+lv.color+'88, '+lv.color+')';
   const nextLv=LEVELS[LEVELS.indexOf(lv)+1];
-  setText('level-sub',nextLv?(lv.max-pts)+' pts to '+nextLv.emoji+' '+nextLv.n:'🖤 Elite — Maximum level reached!');
+  setText('level-sub',nextLv?(lv.max-pts)+' pts to '+nextLv.n+' rank':'Elite rank reached!');
 }
 
 function setText(id,val){const e=document.getElementById(id);if(e)e.textContent=val;}
 
 async function loadRecent(){
   if(!user)return;
-  const{data}=await sb.from('logs').select('*').eq('user_id',user.id).order('created_at',{ascending:false}).limit(5);
+  const{data}=await sb.from('logs').select('*').eq('user_id',user.id).order('created_at',{ascending:false});
   myLogs=data||[];
+  // Recent activity: latest log per skill, max 8 shown
+  const seen=new Set();
+  const dedupedLogs=myLogs.filter(l=>{
+    if(seen.has(l.skill_name.toLowerCase()))return false;
+    seen.add(l.skill_name.toLowerCase());return true;
+  }).slice(0,8);
   const el=document.getElementById('recent-activity');
   if(!myLogs.length){el.innerHTML='<div class="empty">No activity yet. Log your first skill! 💪</div>';return;}
-  el.innerHTML=myLogs.map(l=>{
+  el.innerHTML=dedupedLogs.map(l=>{
     const sk=SKILLS.find(s=>s.n.toLowerCase()===l.skill_name.toLowerCase());
     const dt=new Date(l.created_at).toLocaleDateString('en-IN',{month:'short',day:'numeric'});
     return `<div class="activity-item">
@@ -754,27 +941,35 @@ async function loadRecent(){
 async function loadLB(){
   const el=document.getElementById('lb-list'),pod=document.getElementById('podium-section');
   el.innerHTML='<div class="loading">Loading…</div>';
-  let q=sb.from('profiles').select('*').order('points',{ascending:false}).limit(25);
+  let q=sb.from('profiles').select('id,name,city,country,points,current_belt,skills_count').order('points',{ascending:false}).limit(25);
   if(lbScope==='national'&&prof?.country)q=q.eq('country',prof.country);
   if(lbScope==='city'&&selectedCity)q=q.ilike('city',selectedCity);
   else if(lbScope==='city'&&!selectedCity){el.innerHTML='<div class="empty">Enter a city name above to see local rankings 📍</div>';pod.innerHTML='';return;}
-  const{data}=await q;
+  const{data,error:lbErr}=await q;
+  if(lbErr){el.innerHTML='<div class="empty">Error loading leaderboard: '+lbErr.message+'</div>';return;}
   const scopeLabels={world:'🌍 World Rankings',national:'🏳️ '+(prof?.country||'National')+' Rankings',city:'📍 '+(selectedCity||'City')+' Rankings'};
   setText('lb-scope-label',scopeLabels[lbScope]);
   if(!data||!data.length){el.innerHTML='<div class="empty">No athletes yet. Be the first! 🏆</div>';pod.innerHTML='';return;}
-  if(data.length>=3){
+  if(data.length>=1){
+    const b0=BELT_INFO[data[0]?.current_belt||'white'];
+    const b1=BELT_INFO[data[1]?.current_belt||'white'];
+    const b2=BELT_INFO[data[2]?.current_belt||'white'];
     pod.innerHTML=`<div class="podium">
-      <div class="podium-item second"><div class="podium-avatar" style="background:${COLORS[1]};color:#fff">${initials(data[1].name)}</div><div class="podium-name">${data[1].name.split(' ')[0]}</div><div class="podium-pts">${data[1].points} pts</div><div class="podium-base"><div class="podium-rank">2</div></div></div>
-      <div class="podium-item first"><div style="font-size:18px;margin-bottom:4px;">👑</div><div class="podium-avatar">${initials(data[0].name)}</div><div class="podium-name">${data[0].name.split(' ')[0]}</div><div class="podium-pts">${data[0].points} pts</div><div class="podium-base"><div class="podium-rank">1</div></div></div>
-      <div class="podium-item third"><div class="podium-avatar" style="background:${COLORS[2]};color:#fff">${data[2]?initials(data[2].name):'?'}</div><div class="podium-name">${data[2]?.name.split(' ')[0]||'—'}</div><div class="podium-pts">${data[2]?.points||0} pts</div><div class="podium-base"><div class="podium-rank">3</div></div></div>
+      ${data[1]?`<div class="podium-item second"><div class="podium-avatar" style="background:${COLORS[1]};color:#fff">${initials(data[1].name)}</div><div class="podium-name">${data[1].name.split(' ')[0]} ${b1.emoji}</div><div class="podium-pts">${data[1].points} pts</div><div class="podium-base"><div class="podium-rank">2</div></div></div>`:''}
+      <div class="podium-item first"><div style="font-size:18px;margin-bottom:4px;">👑</div><div class="podium-avatar">${initials(data[0].name)}</div><div class="podium-name">${data[0].name.split(' ')[0]} ${b0.emoji}</div><div class="podium-pts">${data[0].points} pts</div><div class="podium-base"><div class="podium-rank">1</div></div></div>
+      ${data[2]?`<div class="podium-item third"><div class="podium-avatar" style="background:${COLORS[2]};color:#fff">${initials(data[2].name)}</div><div class="podium-name">${data[2].name.split(' ')[0]} ${b2.emoji}</div><div class="podium-pts">${data[2].points||0} pts</div><div class="podium-base"><div class="podium-rank">3</div></div></div>`:''}
     </div>`;
   }
   el.innerHTML=data.slice(3).map((p,i)=>{
     const isMe=user&&p.id===user.id;
+    const belt=BELT_INFO[p.current_belt||'white'];
     return `<div class="lb-row ${isMe?'you':''}">
       <div class="lb-pos">${i+4}</div>
       <div class="lb-av" style="background:${COLORS[(i+4)%COLORS.length]};color:#fff">${initials(p.name)}</div>
-      <div style="flex:1"><div class="lb-nm">${p.name}${isMe?' (You)':''}</div><div class="lb-city">${p.city}</div></div>
+      <div style="flex:1">
+        <div class="lb-nm">${p.name}${isMe?' (You)':''} <span style="font-size:14px;">${belt.emoji}</span></div>
+        <div class="lb-city">${p.city||'Earth'}</div>
+      </div>
       <div><div class="lb-pts-val">${p.points}</div><div class="lb-pts-lbl">pts</div></div>
     </div>`;
   }).join('');
@@ -812,22 +1007,135 @@ function selectCity(city){
 }
 function setLBFilter(el){document.querySelectorAll('#screen-rank .filter-pill').forEach(p=>p.classList.remove('active'));el.classList.add('active');}
 
+function getUserBelt(){
+  // Belt ONLY changes when admin updates current_belt in Supabase profiles
+  // Never auto-promoted by points or skill count
+  if(!prof)return'white';
+  const belt=prof.current_belt;
+  if(belt&&BELT_ORDER.includes(belt))return belt;
+  return'white';
+}
+
+function getBeltSkillsCompleted(belt){
+  const beltSkills=SKILLS.filter(s=>s.belt===belt);
+  // Use a Set of logged skill names for fast lookup
+  const loggedSkills=new Set(myLogs.map(l=>l.skill_name.toLowerCase()));
+  return beltSkills.filter(sk=>loggedSkills.has(sk.n.toLowerCase())).length;
+}
+
 function loadSkills(filter='all'){
-  const list=filter==='all'?SKILLS:SKILLS.filter(s=>s.cat===filter);
-  document.getElementById('skills-list').innerHTML=list.map(sk=>{
-    const log=myLogs.find(l=>l.skill_name.toLowerCase()===sk.n.toLowerCase());
-    const unl=!!log;
-    return `<div class="skill-card ${unl?'unlocked':''}">
-      <div class="skill-icon">${sk.ico}</div>
-      <div class="skill-info"><div class="skill-nm">${sk.n}</div><div class="skill-diff">${sk.cat.charAt(0).toUpperCase()+sk.cat.slice(1)} · ${sk.d}</div></div>
-      <div class="skill-right">
-        <span class="skill-pts-badge">+${sk.p} pts</span>
-        <button class="yt-btn" onclick="window.open('${sk.yt}','_blank')">▶ Tutorial</button>
-        ${!isGuest?`<button class="log-btn-sm" onclick="showLogModal('${sk.n}','${sk.u}')">Log</button>`:''}
-        ${log?`<span class="best-score-txt">Best: ${log.score}</span>`:`<span class="best-score-txt">${unl?'':'🔒 Log to unlock'}</span>`}
+  const userBelt=getUserBelt();
+  const beltIdx=BELT_ORDER.indexOf(userBelt);
+  const el=document.getElementById('skills-list');
+
+  // Filter skills by category if needed
+  const allSkills=filter==='all'?SKILLS:SKILLS.filter(s=>s.cat===filter);
+
+  // Group by belt
+  let html='';
+  BELT_ORDER.forEach((belt,bi)=>{
+    const bInfo=BELT_INFO[belt];
+    const beltSkills=allSkills.filter(s=>s.belt===belt);
+    if(!beltSkills.length)return;
+    const completed=getBeltSkillsCompleted(belt);
+    const total=SKILLS.filter(s=>s.belt===belt).length;
+    // Only unlock current belt and below based on APPROVED submissions
+    // White belt always unlocked. Next belt only after test approval.
+    const isUnlocked=bi<=beltIdx;
+    const isCurrentBelt=bi===beltIdx;
+    // Next belt is visible but locked (show what's coming)
+    const isNextBelt=bi===beltIdx+1;
+    const pct=Math.round((completed/total)*100);
+
+    html+=`<div style="margin-bottom:20px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:20px;">${bInfo.emoji}</span>
+          <div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:${isUnlocked?bInfo.color:'var(--muted)'};">${bInfo.label}</div>
+            <div style="font-size:11px;color:var(--muted);">${isUnlocked?(isCurrentBelt?`${completed}/${total} skills · ${pct}% complete`:'Completed ✅'):'🔒 Complete previous belt to unlock'}</div>
+          </div>
+        </div>
+        ${isCurrentBelt&&completed===total?
+          `<button onclick="openBeltTest('${belt}')" style="background:${bInfo.color};color:#000;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px ${bInfo.color}55;">🎓 Take Belt Test →</button>`
+          : isNextBelt?`<span style="font-size:11px;color:var(--muted);padding:5px 10px;border:1px solid var(--border);border-radius:8px;">🔒 Pass ${BELT_INFO[BELT_ORDER[bi-1]].label} first</span>`
+          : !isUnlocked&&!isNextBelt?`<span style="font-size:11px;color:var(--muted);">🔒 Locked</span>`
+          : isUnlocked&&!isCurrentBelt?`<span style="font-size:11px;color:#00cc88;">✅ Completed</span>`:''
+        }
       </div>
-    </div>`;
-  }).join('');
+      ${isCurrentBelt?`<div style="height:4px;background:rgba(255,255,255,0.08);border-radius:99px;margin-bottom:12px;overflow:hidden;"><div style="height:100%;width:${pct}%;background:${bInfo.color};border-radius:99px;transition:width 1s ease;"></div></div>`:''}`;
+
+    beltSkills.forEach(sk=>{
+      const loggedSet=new Set(myLogs.map(l=>l.skill_name.toLowerCase()));
+      const log=myLogs.find(l=>l.skill_name.toLowerCase()===sk.n.toLowerCase());
+      const done=loggedSet.has(sk.n.toLowerCase());
+      const canLog=isUnlocked&&!isGuest;
+      const lockStyle=!isUnlocked?(isNextBelt?'opacity:0.35;pointer-events:none;filter:blur(0.5px);':'opacity:0.2;pointer-events:none;'):'';
+      html+=`<div class="skill-card ${done?'unlocked':''}" style="${lockStyle}">
+        <div class="skill-icon" style="background:${done?'rgba(0,200,150,0.1)':'var(--surface2)'};">${sk.ico}</div>
+        <div class="skill-info">
+          <div class="skill-nm">${sk.n}</div>
+          <div class="skill-diff">${sk.cat.charAt(0).toUpperCase()+sk.cat.slice(1)} · ${sk.d}</div>
+        </div>
+        <div class="skill-right">
+          <span class="skill-pts-badge">+${sk.p} pts</span>
+          <button class="yt-btn" onclick="window.open('${sk.yt}','_blank')">▶ Tutorial</button>
+          ${canLog?`<button class="log-btn-sm" onclick="showLogModal('${sk.n}','${sk.u}')">Log</button>`:''}
+          ${done?`<span class="best-score-txt" style="color:#00cc88;">✅ ${log.score}</span>`:''}
+        </div>
+      </div>`;
+    });
+    html+='</div>';
+  });
+
+  el.innerHTML=html;
+}
+
+function openBeltTest(belt){
+  if(isGuest){showToast('Sign up to take belt tests!');return;}
+  const bInfo=BELT_INFO[belt];
+  document.getElementById('belt-test-title').textContent=bInfo.emoji+' '+bInfo.label+' Test';
+  document.getElementById('belt-test-body').innerHTML=`
+    <p style="font-size:14px;color:var(--muted);margin-bottom:16px;line-height:1.6;">
+      You've completed all ${bInfo.label} skills! Record a video showing ALL skills for this belt, then submit for review.
+    </p>
+    <div style="background:rgba(0,170,255,0.06);border:1px solid rgba(0,170,255,0.15);border-radius:10px;padding:14px;margin-bottom:16px;">
+      <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:8px;">What happens next:</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.8;">
+        1. Community reviews your video (3 votes needed)<br>
+        2. Admin final approval<br>
+        3. ${BELT_INFO[bInfo.next||'green'].emoji} ${BELT_INFO[bInfo.next||'green']?.label||'Elite'} unlocked<br>
+        4. 🎽 T-shirt on its way!
+      </div>
+    </div>
+    <input id="belt-video-url" class="modal-input" placeholder="Paste your YouTube or Google Drive video link...">
+    <textarea id="belt-video-note" class="modal-input" style="height:70px;resize:none;" placeholder="Any notes about your submission (optional)..."></textarea>
+    <button onclick="submitBeltTest('${belt}')" class="modal-btn">Submit for Review 🚀</button>
+  `;
+  document.getElementById('belt-test-modal').classList.add('open');
+}
+
+async function submitBeltTest(belt){
+  const url=document.getElementById('belt-video-url').value.trim();
+  if(!url){showToast('Please paste your video link');return;}
+  // Check if already submitted and pending
+  const{data:existing}=await sb.from('belt_submissions')
+    .select('id,status').eq('user_id',user.id).eq('belt',belt);
+  if(existing&&existing.length){
+    const pending=existing.find(s=>s.status==='pending');
+    if(pending){showToast('You already have a pending submission for this belt!');return;}
+  }
+  const{error}=await sb.from('belt_submissions').insert({
+    user_id:user.id,belt,
+    video_url:url,
+    notes:document.getElementById('belt-video-note').value.trim(),
+    status:'pending',
+    community_votes:0
+  });
+  if(error){showToast('Error: '+error.message);return;}
+  closeModal('belt-test-modal');
+  showToast('Submitted! Community will review + Sagar will approve 🎉');
+  // NOTE: Belt only upgrades when admin sets current_belt in profiles table
 }
 
 function filterSkills(el,f){document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');loadSkills(f);}
@@ -886,7 +1194,6 @@ function updatePayAmount(){
 function processPayment(){closeModal('payModal');showToast('Redirecting to '+(payMethod==='razorpay'?'Razorpay':'Stripe')+' — Coming soon! 🚀');}
 
 async function loadFeed(){
-  // Show post box or guest prompt
   if(!isGuest&&user){
     document.getElementById('post-box').style.display='block';
     document.getElementById('guest-post-prompt').style.display='none';
@@ -894,49 +1201,43 @@ async function loadFeed(){
     document.getElementById('post-box').style.display='none';
     document.getElementById('guest-post-prompt').style.display='block';
   }
-
   const el=document.getElementById('feed-list');
-
-  // Fetch both community posts and skill logs
-  const[postsRes,logsRes]=await Promise.all([
-    sb.from('posts').select('*, profiles(name,city)').order('created_at',{ascending:false}).limit(10),
-    sb.from('logs').select('*, profiles(name,city)').order('created_at',{ascending:false}).limit(10)
-  ]);
-
-  const posts=(postsRes.data||[]).map(p=>({...p,_type:'post'}));
-  const logs=(logsRes.data||[]).map(l=>({...l,_type:'log'}));
-
-  // Merge and sort by date
-  const combined=[...posts,...logs].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).slice(0,20);
-
-  if(!combined.length){el.innerHTML='<div class="empty">No activity yet. Be the first! 🔥</div>';return;}
-
-  el.innerHTML=combined.map((item,i)=>{
-    const p=item.profiles;if(!p)return'';
-    const dt=new Date(item.created_at).toLocaleDateString('en-IN',{month:'short',day:'numeric'});
-    const av=`<div class="feed-av" style="background:${COLORS[i%COLORS.length]};color:#fff">${initials(p.name)}</div>`;
-    const header=`<div class="feed-user">${av}<div><div class="feed-user-name">${p.name}</div><div class="feed-user-loc">${p.city||'Earth'}</div></div><div class="feed-time">${dt}</div></div>`;
-    const actions=`<div class="feed-actions"><button class="feed-action" onclick="this.classList.toggle('liked');this.textContent=this.classList.contains('liked')?'🔥 Fired!':'🔥 Fire'">🔥 Fire</button><button class="feed-action">💬 Comment</button></div>`;
-
-    if(item._type==='post'){
-      return `<div class="feed-card">
-        ${header}
-        <div style="font-size:14px;color:var(--text);line-height:1.6;margin-bottom:12px;padding:14px;background:rgba(0,170,255,0.04);border:1px solid rgba(0,170,255,0.08);border-radius:10px;">${item.content}</div>
-        ${actions}
-      </div>`;
-    } else {
-      const sk=SKILLS.find(s=>s.n.toLowerCase()===item.skill_name.toLowerCase());
-      return `<div class="feed-card">
-        ${header}
-        <div class="feed-achievement">
-          <div class="feed-ach-icon">${sk?.ico||'🏃'}</div>
-          <div style="flex:1"><div class="feed-ach-title">${item.is_personal_best?'New Personal Best 🌟':'Skill Logged'}</div><div class="feed-ach-sub">${item.skill_name} · ${item.category}</div></div>
-          <div class="feed-score-highlight">${item.score}</div>
+  const{data,error}=await sb.from('posts').select('*, profiles(name,city,current_belt)').order('created_at',{ascending:false}).limit(30);
+  if(error){el.innerHTML='<div class="empty">Could not load feed.</div>';return;}
+  if(!data||!data.length){
+    el.innerHTML=`<div class="empty" style="padding:40px 16px;">
+      <div style="font-size:36px;margin-bottom:12px;">💬</div>
+      <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px;">No posts yet</div>
+      <div style="font-size:13px;color:var(--muted);">Be the first to share something with the community!</div>
+    </div>`;
+    return;
+  }
+  el.innerHTML=data.map((post,i)=>{
+    const p=post.profiles;if(!p)return'';
+    const belt=BELT_INFO[p.current_belt||'white'];
+    const dt=new Date(post.created_at).toLocaleDateString('en-IN',{month:'short',day:'numeric'});
+    return `<div class="feed-card">
+      <div class="feed-user">
+        <div class="feed-av" style="background:${COLORS[i%COLORS.length]};color:#fff">${initials(p.name)}</div>
+        <div style="flex:1">
+          <div class="feed-user-name">${p.name} <span style="font-size:13px;">${belt.emoji}</span></div>
+          <div class="feed-user-loc">${p.city||'Earth'}</div>
         </div>
-        ${actions}
-      </div>`;
-    }
+        <div class="feed-time">${dt}</div>
+      </div>
+      <div style="font-size:14px;color:var(--text);line-height:1.7;margin-bottom:14px;padding:14px;background:rgba(0,170,255,0.04);border:1px solid rgba(0,170,255,0.08);border-radius:10px;">${post.content}</div>
+      <div class="feed-actions">
+        <button class="feed-action" onclick="toggleFire(this)">🔥 Fire</button>
+        <button class="feed-action">💬 Comment</button>
+        <button class="feed-action" onclick="sharePost('${post.content.replace(/'/g,"\'")}','${p.name}')">↗ Share</button>
+      </div>
+    </div>`;
   }).filter(Boolean).join('');
+}
+
+function toggleFire(btn){
+  btn.classList.toggle('liked');
+  btn.textContent=btn.classList.contains('liked')?'🔥 Fired!':'🔥 Fire';
 }
 
 // Post character counter
@@ -997,10 +1298,11 @@ function switchScreen(name){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('screen-'+name).classList.add('active');
-  const map={home:0,skills:1,rank:2,training:3,feed:4};
+  const map={home:0,skills:1,rank:2,training:3,feed:4,calendar:5};
   if(map[name]!==undefined)document.querySelectorAll('.nav-item')[map[name]]?.classList.add('active');
   window.scrollTo(0,0);
   if(name==='profile')loadProfileSkills();
+  if(name==='calendar')loadWOD();
 }
 
 function showLogModal(skill,unit){
@@ -1035,12 +1337,453 @@ async function saveLog(){
   const isPB=!ex||!ex.length;
   const{error}=await sb.from('logs').insert({user_id:user.id,skill_name:skill,score,category:cat,is_personal_best:isPB,points_earned:pts});
   if(error){showToast('Error: '+error.message);return;}
-  const np=(prof.points||0)+pts,nm=(prof.moves_count||0)+1,ns=isPB?(prof.skills_count||0)+1:(prof.skills_count||0);
-  await sb.from('profiles').update({points:np,moves_count:nm,skills_count:ns}).eq('id',user.id);
-  prof.points=np;prof.moves_count=nm;prof.skills_count=ns;
+  // moves_count = unique skills only (not total logs)
+  const np=(prof.points||0)+pts;
+  const ns=isPB?(prof.skills_count||0)+1:(prof.skills_count||0);
+  // Count unique skills from logs
+  const{data:uniqueLogs}=await sb.from('logs').select('skill_name').eq('user_id',user.id);
+  const uniqueSkills=new Set((uniqueLogs||[]).map(l=>l.skill_name)).size;
+  await sb.from('profiles').update({points:np,moves_count:uniqueSkills,skills_count:ns}).eq('id',user.id);
+  prof.points=np;prof.moves_count=uniqueSkills;prof.skills_count=ns;
   updateStats();closeModal('logModal');
   showToast(`+${pts} pts! ${isPB?'🌟 New skill!':'💪 Keep going!'}`);
   await loadAll();
+}
+
+// ── WOD + CALENDAR + STREAK ──
+
+async function loadWOD(){
+  const today=new Date();
+  const todayStr=today.toISOString().split('T')[0];
+  const userBelt=getUserBelt();
+
+  // Render streak banner
+  renderStreakBanner();
+
+  // Fetch today's workout for user's belt level
+  const{data:wods}=await sb.from('daily_workouts')
+    .select('*')
+    .eq('workout_date',todayStr)
+    .or(`belt_level.eq.${userBelt},belt_level.eq.all`)
+    .order('belt_level',{ascending:true})
+    .limit(1);
+
+  const el=document.getElementById('wod-today');
+
+  if(!wods||!wods.length){
+    el.innerHTML=`<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;text-align:center;margin-bottom:16px;">
+      <div style="font-size:36px;margin-bottom:12px;">💤</div>
+      <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px;">Rest Day</div>
+      <div style="font-size:13px;color:var(--muted);">No workout scheduled today. Recovery is part of the journey.</div>
+    </div>`;
+    return;
+  }
+
+  const wod=wods[0];
+  const belt=BELT_INFO[userBelt];
+
+  // Check if user already completed today's WOD
+  const{data:done}=await sb.from('wod_completions')
+    .select('id').eq('user_id',user?.id||'').eq('workout_date',todayStr).limit(1);
+  const isDone=done&&done.length>0;
+
+  el.innerHTML=`<div class="wod-card">
+    <div class="wod-date-badge">📅 ${today.toLocaleDateString('en-IN',{weekday:'long',month:'long',day:'numeric'})} · ${belt.emoji} ${belt.label}</div>
+    <div class="wod-title">${wod.title}</div>
+    <div class="wod-desc">${wod.description.replace(/\n/g,'<br>')}</div>
+    <div class="wod-meta">
+      <div class="wod-meta-item"><strong>${wod.duration||'—'}</strong>Duration</div>
+      <div class="wod-meta-item"><strong>+${wod.points_reward||10}</strong>Points</div>
+      <div class="wod-meta-item"><strong>${wod.difficulty||belt.label.split(' ')[0]}</strong>Level</div>
+    </div>
+    <button class="wod-complete-btn ${isDone?'done':''}" onclick="completeWOD('${wod.id}','${todayStr}',${wod.points_reward||10})" ${isDone?'disabled':''}>
+      ${isDone?'Completed Today!':'Mark as Complete'}
+    </button>
+  </div>`;
+
+  // Load calendar
+  renderCalendar();
+}
+
+async function completeWOD(wodId,dateStr,pts){
+  if(!user){showToast('Sign in to log workouts');return;}
+  if(isGuest){showToast('Sign up to log workouts!');return;}
+
+  const{error}=await sb.from('wod_completions').insert({
+    user_id:user.id,workout_id:wodId,workout_date:dateStr,points_earned:pts
+  });
+  if(error&&!error.message.includes('duplicate')){showToast('Error: '+error.message);return;}
+
+  // Update profile streak + points
+  await updateStreak(pts);
+  showToast(`+${pts} pts! WOD complete 💪`);
+  loadWOD(); // Refresh
+}
+
+async function updateStreak(pts){
+  if(!prof)return;
+  const today=new Date().toISOString().split('T')[0];
+  const yesterday=new Date(Date.now()-86400000).toISOString().split('T')[0];
+
+  // Check yesterday completion to determine streak
+  const{data:yday}=await sb.from('wod_completions')
+    .select('id').eq('user_id',user.id).eq('workout_date',yesterday).limit(1);
+
+  const hadYesterday=yday&&yday.length>0;
+  const newStreak=hadYesterday?(prof.streak||0)+1:1;
+  const newPts=(prof.points||0)+pts;
+
+  await sb.from('profiles').update({
+    streak:newStreak,points:newPts
+  }).eq('id',user.id);
+
+  prof.streak=newStreak;
+  prof.points=newPts;
+  updateStats();
+
+  // Check for 6-day streak milestone
+  if(newStreak>0&&newStreak%6===0){
+    showStreakBadge(newStreak);
+  }
+}
+
+function renderStreakBanner(){
+  const streak=prof?.streak||0;
+  const wrap=document.getElementById('streak-banner-wrap');
+  if(!wrap)return;
+  if(!streak){wrap.innerHTML='';return;}
+
+  const dots=Array.from({length:6},(_,i)=>
+    `<div class="streak-dot ${i<(streak%6||6)?'filled':''}"></div>`
+  ).join('');
+
+  const nextMilestone=Math.ceil(streak/6)*6;
+  const daysToBonus=nextMilestone-streak;
+
+  wrap.innerHTML=`<div class="streak-banner">
+    <div class="streak-fire-big">🔥</div>
+    <div class="streak-info">
+      <div class="streak-count-big">${streak} DAY STREAK</div>
+      <div class="streak-label">${daysToBonus===6?'Start a new streak!':daysToBonus+' days to next bonus'}</div>
+      <div class="streak-dots">${dots}</div>
+    </div>
+    ${streak%6===0&&streak>0?`<button class="streak-claim-btn" onclick="showStreakBadge(${streak})">Claim 🎁</button>`:''}
+  </div>`;
+}
+
+function showStreakBadge(streak){
+  document.getElementById('badge-emoji').textContent='🔥';
+  document.getElementById('badge-title').textContent=streak+' DAY STREAK!';
+  document.getElementById('badge-sub').textContent=
+    "You've trained "+streak+" days straight. You're unstoppable. Share your achievement and earn bonus points!";
+  document.getElementById('badge-pts').textContent='+5 bonus pts (share for +10)';
+  document.getElementById('streak-badge-popup').classList.add('open');
+}
+
+async function claimStreakWithShare(){
+  document.getElementById('streak-badge-popup').classList.remove('open');
+  // Award 10 pts (share bonus)
+  await awardBonusPoints(10,'streak_share');
+  // Generate share card
+  drawStreakShareCard();
+  document.getElementById('share-modal').classList.add('open');
+  showToast('+10 bonus pts! Share to spread the fire 🔥');
+}
+
+async function claimStreakNoShare(){
+  document.getElementById('streak-badge-popup').classList.remove('open');
+  await awardBonusPoints(5,'streak');
+  showToast('+5 bonus pts! Keep the streak going 🔥');
+}
+
+async function awardBonusPoints(pts,reason){
+  if(!user||!prof)return;
+  const newPts=(prof.points||0)+pts;
+  await sb.from('profiles').update({points:newPts}).eq('id',user.id);
+  prof.points=newPts;
+  updateStats();
+}
+
+function drawStreakShareCard(){
+  const streak=prof?.streak||0;
+  const belt=BELT_INFO[prof?.current_belt||'white'];
+  const canvas=document.getElementById('share-canvas');
+  canvas.width=1080;canvas.height=1080;
+  canvas.style.width='100%';canvas.style.height='auto';
+  const ctx=canvas.getContext('2d');
+
+  // Dark bg
+  const grad=ctx.createLinearGradient(0,0,1080,1080);
+  grad.addColorStop(0,'#0a0500');
+  grad.addColorStop(0.5,'#1a0800');
+  grad.addColorStop(1,'#0a0500');
+  ctx.fillStyle=grad;ctx.fillRect(0,0,1080,1080);
+
+  // Orange glow
+  const glow=ctx.createRadialGradient(540,450,0,540,450,500);
+  glow.addColorStop(0,'rgba(255,100,0,0.2)');
+  glow.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=glow;ctx.fillRect(0,0,1080,1080);
+
+  // Logo
+  ctx.font='bold 48px sans-serif';
+  ctx.fillStyle='#00aaff';
+  ctx.textAlign='center';
+  ctx.fillText('FREERUNNING',540,90);
+
+  // Big fire + streak
+  ctx.font='160px sans-serif';
+  ctx.fillText('🔥',540,320);
+
+  ctx.font='bold 120px sans-serif';
+  ctx.fillStyle='#ff8040';
+  ctx.fillText(streak,540,460);
+
+  ctx.font='bold 52px sans-serif';
+  ctx.fillStyle='rgba(255,180,100,0.9)';
+  ctx.fillText('DAY STREAK',540,540);
+
+  ctx.font='32px sans-serif';
+  ctx.fillStyle='rgba(255,255,255,0.6)';
+  ctx.fillText(prof.name+' · '+belt.emoji+' '+belt.label,540,610);
+
+  ctx.font='28px sans-serif';
+  ctx.fillStyle='rgba(255,150,80,0.7)';
+  ctx.fillText('Training every day. No excuses.',540,670);
+
+  // Divider
+  ctx.strokeStyle='rgba(255,100,0,0.3)';
+  ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(80,720);ctx.lineTo(1000,720);ctx.stroke();
+
+  ctx.font='26px sans-serif';
+  ctx.fillStyle='rgba(150,180,255,0.6)';
+  ctx.fillText('Join the movement → Freerunning App 🔥',540,780);
+}
+
+async function renderCalendar(){
+  const now=new Date();
+  const year=now.getFullYear(),month=now.getMonth();
+  const firstDay=new Date(year,month,1).getDay();
+  const daysInMonth=new Date(year,month+1,0).getDate();
+  const todayDate=now.getDate();
+
+  document.getElementById('cal-month-label').textContent=
+    now.toLocaleDateString('en-IN',{month:'long',year:'numeric'});
+
+  // Fetch all WODs this month
+  const monthStr=year+'-'+String(month+1).padStart(2,'0');
+  const[wodsRes,doneRes]=await Promise.all([
+    sb.from('daily_workouts').select('workout_date,belt_level')
+      .gte('workout_date',monthStr+'-01')
+      .lte('workout_date',monthStr+'-31')
+      .or('belt_level.eq.'+getUserBelt()+',belt_level.eq.all'),
+    user?sb.from('wod_completions').select('workout_date')
+      .eq('user_id',user.id)
+      .gte('workout_date',monthStr+'-01')
+      .lte('workout_date',monthStr+'-31'):Promise.resolve({data:[]})
+  ]);
+
+  const wodDates=new Set((wodsRes.data||[]).map(w=>parseInt(w.workout_date.split('-')[2])));
+  const doneDates=new Set((doneRes.data||[]).map(d=>parseInt(d.workout_date.split('-')[2])));
+
+  let html='';
+  // Empty cells before first day
+  for(let i=0;i<firstDay;i++)html+='<div class="cal-day empty"></div>';
+
+  for(let d=1;d<=daysInMonth;d++){
+    const isToday=d===todayDate;
+    const isDone=doneDates.has(d);
+    const hasWod=wodDates.has(d);
+    let cls='cal-day';
+    if(isDone)cls+=' completed';
+    else if(isToday)cls+=' today';
+    else if(hasWod)cls+=' has-wod';
+    html+=`<div class="${cls}" onclick="calDayClick(${d},${year},${month+1})">${d}</div>`;
+  }
+  document.getElementById('cal-grid').innerHTML=html;
+}
+
+function calDayClick(day,year,month){
+  const dateStr=year+'-'+String(month).padStart(2,'0')+'-'+String(day).padStart(2,'0');
+  const today=new Date().toISOString().split('T')[0];
+  if(dateStr===today){
+    // Scroll to today's WOD
+    document.getElementById('wod-today').scrollIntoView({behavior:'smooth'});
+  } else {
+    showToast('Only today\'s workout can be logged');
+  }
+}
+
+// ── SHARE FUNCTIONS ──
+function drawShareCard(title, lines, subtitle){
+  const canvas=document.getElementById('share-canvas');
+  const dpr=window.devicePixelRatio||1;
+  canvas.width=1080;canvas.height=1080;
+  canvas.style.width='100%';canvas.style.height='auto';
+  const ctx=canvas.getContext('2d');
+
+  // Background
+  const grad=ctx.createLinearGradient(0,0,1080,1080);
+  grad.addColorStop(0,'#050810');
+  grad.addColorStop(0.5,'#081530');
+  grad.addColorStop(1,'#050810');
+  ctx.fillStyle=grad;ctx.fillRect(0,0,1080,1080);
+
+  // Glow circle
+  const glow=ctx.createRadialGradient(540,400,0,540,400,500);
+  glow.addColorStop(0,'rgba(0,100,255,0.15)');
+  glow.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=glow;ctx.fillRect(0,0,1080,1080);
+
+  // Logo
+  ctx.font='bold 52px sans-serif';
+  ctx.fillStyle='#00aaff';
+  ctx.textAlign='center';
+  ctx.fillText('FREERUNNING',540,100);
+
+  // Tagline
+  ctx.font='24px sans-serif';
+  ctx.fillStyle='rgba(100,150,255,0.7)';
+  ctx.fillText('whereathletespushlimits.com',540,145);
+
+  // Divider line
+  ctx.strokeStyle='rgba(0,170,255,0.3)';
+  ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(80,170);ctx.lineTo(1000,170);ctx.stroke();
+
+  // Belt emoji + title
+  const belt=BELT_INFO[prof?.current_belt||'white'];
+  ctx.font='bold 80px sans-serif';
+  ctx.fillStyle='#ffffff';
+  ctx.textAlign='center';
+  ctx.fillText(belt.emoji,540,290);
+
+  ctx.font='bold 56px sans-serif';
+  ctx.fillStyle='#ffffff';
+  ctx.fillText(title,540,380);
+
+  // Subtitle
+  ctx.font='30px sans-serif';
+  ctx.fillStyle='rgba(150,180,255,0.8)';
+  ctx.fillText(subtitle,540,430);
+
+  // Stats grid
+  lines.forEach((line,i)=>{
+    const col=i%2===0?280:800;
+    const row=Math.floor(i/2);
+    const y=560+row*140;
+
+    // Card bg
+    ctx.fillStyle='rgba(0,100,255,0.1)';
+    ctx.strokeStyle='rgba(0,170,255,0.2)';
+    ctx.lineWidth=1;
+    roundRect(ctx,col-160,y-60,320,110,12);
+    ctx.fill();ctx.stroke();
+
+    // Value
+    ctx.font='bold 48px sans-serif';
+    ctx.fillStyle='#00d4ff';
+    ctx.textAlign='center';
+    ctx.fillText(line.val,col,y);
+
+    // Label
+    ctx.font='22px sans-serif';
+    ctx.fillStyle='rgba(150,180,255,0.7)';
+    ctx.fillText(line.label,col,y+38);
+  });
+
+  // Bottom branding
+  ctx.strokeStyle='rgba(0,170,255,0.3)';
+  ctx.beginPath();ctx.moveTo(80,960);ctx.lineTo(1000,960);ctx.stroke();
+  ctx.font='24px sans-serif';
+  ctx.fillStyle='rgba(100,150,255,0.6)';
+  ctx.textAlign='center';
+  ctx.fillText('Join me on Freerunning App 🔥',540,1010);
+
+  document.getElementById('share-modal').classList.add('open');
+}
+
+function roundRect(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.lineTo(x+w-r,y);ctx.arcTo(x+w,y,x+w,y+r,r);
+  ctx.lineTo(x+w,y+h-r);ctx.arcTo(x+w,y+h,x+w-r,y+h,r);
+  ctx.lineTo(x+r,y+h);ctx.arcTo(x,y+h,x,y+h-r,r);
+  ctx.lineTo(x,y+r);ctx.arcTo(x,y,x+r,y,r);
+  ctx.closePath();
+}
+
+function shareStats(){
+  if(!prof){showToast('Sign in to share stats');return;}
+  const belt=BELT_INFO[prof.current_belt||'white'];
+  drawShareCard(
+    prof.name.split(' ')[0]+"'s Stats",
+    [
+      {val:prof.points||0,label:'Points'},
+      {val:belt.emoji+' '+belt.label.split(' ')[0],label:'Belt'},
+      {val:prof.skills_count||0,label:'Skills'},
+      {val:prof.streak||0,label:'Day Streak'},
+    ],
+    'My Freerunning Journey'
+  );
+}
+
+function shareWorkout(){
+  if(!prof){showToast('Sign in to share workout');return;}
+  // Get today's logs
+  const today=new Date().toDateString();
+  const todayLogs=myLogs.filter(l=>new Date(l.created_at).toDateString()===today);
+  if(!todayLogs.length){showToast("Log today's skills first!");return;}
+  const belt=BELT_INFO[prof.current_belt||'white'];
+  const lines=todayLogs.slice(0,4).map(l=>({
+    val:l.score,
+    label:l.skill_name.length>12?l.skill_name.slice(0,12)+'…':l.skill_name
+  }));
+  if(lines.length<4){
+    while(lines.length<4)lines.push({val:'—',label:'—'});
+  }
+  drawShareCard(
+    "Today's Workout",
+    lines,
+    new Date().toLocaleDateString('en-IN',{weekday:'long',month:'short',day:'numeric'})
+  );
+}
+
+function sharePost(content,name){
+  const text=`"${content}" — ${name} on Freerunning App\n\nJoin the movement: freerunning.app`;
+  if(navigator.share){
+    navigator.share({title:'Freerunning App',text}).catch(()=>{});
+  } else {
+    navigator.clipboard.writeText(text).then(()=>showToast('Copied to clipboard!'));
+  }
+}
+
+function downloadShareCard(){
+  const canvas=document.getElementById('share-canvas');
+  const a=document.createElement('a');
+  a.download='freerunning-stats.png';
+  a.href=canvas.toDataURL('image/png');
+  a.click();
+}
+
+async function shareToNative(){
+  const canvas=document.getElementById('share-canvas');
+  try{
+    canvas.toBlob(async blob=>{
+      const file=new File([blob],'freerunning.png',{type:'image/png'});
+      if(navigator.share&&navigator.canShare({files:[file]})){
+        await navigator.share({
+          files:[file],
+          title:'Freerunning App',
+          text:'Check out my stats on Freerunning App! 🔥'
+        });
+      } else {
+        downloadShareCard();
+        showToast('Image saved — share it anywhere!');
+      }
+    },'image/png');
+  } catch(e){downloadShareCard();}
 }
 
 async function signOut(){await sb.auth.signOut();location.reload();}
